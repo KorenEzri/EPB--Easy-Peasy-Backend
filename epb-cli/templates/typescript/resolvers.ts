@@ -17,5 +17,4 @@ export const resolvers = {
       return "OK!";
     },
   },
-  Mutation: {},
 };
