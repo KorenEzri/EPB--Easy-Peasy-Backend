@@ -6,16 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "files": [
-    "epb"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/KorenEzri/EPB--Easy-Peasy-Backend.git"
   },
   "bin": {
-    "@korenezri/easy-peasy-backend": "./epb/epb-cli/bin/create-project",
-    "create-project": "./epb/epb-cli/bin/create-project"
+    "@korenezri/easy-peasy-backend": "epb\\epb-cli\\bin\\create-project",
+    "create-project": "epb\\epb-cli\\bin\\create-project"
   },
   "publishConfig": {
     "access": "public"
