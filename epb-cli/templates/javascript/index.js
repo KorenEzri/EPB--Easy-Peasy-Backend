@@ -1,11 +1,11 @@
 require("dotenv").config();
-import { ApolloServer } from "apollo-server-express";
-import { typeDefs } from "./typeDefs";
-import { resolvers } from "./resolvers";
-import express from "express";
-import cors from "cors";
-import { connectToDb } from "./connections";
-import Logger from "./logger/logger";
+const { ApolloServer } = require("apollo-server-express");
+const { typeDefs } = require("./typeDefs");
+const { resolvers } = require("./resolvers");
+const express = require("express");
+const cors = require("cors");
+const { connectToDb } = require("./connections");
+const { Logger } = require("./logger/logger");
 
 const PORT = process.env.PORT || 8081;
 connectToDb();
@@ -42,7 +42,6 @@ const startServer = async () => {
     resolvers,
   });
   server.applyMiddleware({ app });
-  await connectMongo();
   app.listen({ port: PORT }, () =>
     Logger.info(
       `Server is now running at http://localhost:${PORT}${server.graphqlPath}`

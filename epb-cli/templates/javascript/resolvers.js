@@ -11,8 +11,12 @@ const dateScalar = new GraphQLScalarType({
 });
 const resolvers = {
   Date: dateScalar,
-  Query: {},
-  Mutation: {},
+  Query: {
+    test: async () => {
+      console.log("TEST PASSED!");
+      return "OK!";
+    },
+  },
 };
 
 module.exports = { resolvers };

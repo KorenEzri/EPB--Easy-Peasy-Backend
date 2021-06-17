@@ -6,6 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "epb-server\\build",
+    "client\\build",
+    "/epb-cli",
+    "/logger",
+    "/logs",
+    "/package.json",
+    "/package-lock.json"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/KorenEzri/EPB--Easy-Peasy-Backend.git"

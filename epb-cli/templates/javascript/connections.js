@@ -1,11 +1,11 @@
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import Logger from './logger/logger';
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const { Logger } = require("./logger/logger");
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || '';
-export const connectToDb = () =>
+const MONGO_URI = process.env.MONGO_URI || "";
+const connectToDb = () =>
   mongoose.connect(
     MONGO_URI,
     {
@@ -14,6 +14,8 @@ export const connectToDb = () =>
       useUnifiedTopology: true,
     },
     () => {
-      Logger.info('connected to database');
-    },
+      Logger.info("connected to database");
+    }
   );
+
+module.exports = { connectToDb };

@@ -25,7 +25,6 @@ const copyDatabaseFiles = async (options) => {
     .replace("setup-util.js\\", "");
 
   options.databaseTemplateDir = databaseTemplateDir;
-  console.log(options);
   return copy(databaseTemplateDir, `${options.targetDirectory}/db`, {
     clobber: false,
   });

@@ -5,8 +5,6 @@ const typeDefs = gql`
   type Query {
     test: String
   }
-  type Mutation {
-  }
 `;
 
 module.exports = { typeDefs };
