@@ -75,6 +75,5 @@ const promptForMissingOptions = async (options) => {
 export const cli = async (args) => {
   let options = parseArgumentsIntoOptions(args);
   options = await promptForMissingOptions(options);
-  const res = await createProject(options);
-  if (res) execa("npm run dev");
+  await createProject(options);
 };
