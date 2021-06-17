@@ -20,8 +20,8 @@
     "url": "git+https://github.com/KorenEzri/EPB--Easy-Peasy-Backend.git"
   },
   "bin": {
-    "@korenezri/easy-peasy-backend": "./epb-cli/bin/create-project",
-    "create-project": "./epb-cli/bin/create-project"
+    "@korenezri/easy-peasy-backend": "./epb/epb-cli/bin/create-project",
+    "create-project": "./epb/epb-cli/bin/create-project"
   },
   "publishConfig": {
     "access": "public"
