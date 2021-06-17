@@ -1,4 +1,5 @@
 import arg from "arg";
+import execa from "execa";
 import inquirer from "inquirer";
 import { createProject } from "./main";
 
@@ -77,5 +78,8 @@ const promptForMissingOptions = async (options) => {
 export const cli = async (args) => {
   let options = parseArgumentsIntoOptions(args);
   options = await promptForMissingOptions(options);
-  await createProject(options);
+  const res = await createProject(options);
+  if (res) {
+    await execa("npm run dev");
+  }
 };

@@ -1,8 +1,4 @@
-import express from 'express';
-import helmet from 'helmet';
+import express from "express";
 const app = express();
-
-app.use(express.json());
-app.use(helmet());
 
 export default app;

@@ -4,6 +4,8 @@
   "description": "An easy to use GQL backend generator",
   "main": "index.js",
   "scripts": {
+    "start": "node epb/epb-server/build/index.js",
+    "dev": "nodemon epb/epb-server/build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -37,6 +39,7 @@
     "listr": "^0.14.3",
     "morgan": "^1.10.0",
     "ncp": "^2.0.0",
+    "nodemon": "^2.0.7",
     "pkg-install": "^1.0.0",
     "ts-node": "^10.0.0",
     "winston": "^3.3.3"
