@@ -1,5 +1,4 @@
 import arg from "arg";
-import execa from "execa";
 import inquirer from "inquirer";
 import { createProject } from "./main";
 

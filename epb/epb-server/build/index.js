@@ -19,7 +19,6 @@ const resolvers_1 = require("./resolvers");
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const logger_1 = __importDefault(require("./logger/logger"));
-const path_1 = __importDefault(require("path"));
 const PORT = process.env.PORT || 8001;
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
@@ -35,7 +34,6 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
         res.setHeader("Access-Control-Allow-Credentials", "true");
         next();
     });
-    app.use(express_1.default.static("../../client/build"));
     const server = new apollo_server_express_1.ApolloServer({
         context: ({ req, res }) => ({ req, res }),
         playground: {
@@ -47,9 +45,6 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
         typeDefs: typeDefs_1.typeDefs,
     });
     server.applyMiddleware({ app });
-    app.listen({ port: PORT }, () => logger_1.default.http(`Easy-Peasy-Backend - http://localhost:${PORT}${server.graphqlPath}`));
-    app.get("*", (req, res) => {
-        res.sendFile(path_1.default.join(__dirname, "../../client/build/index.html"));
-    });
+    app.listen({ port: PORT }, () => logger_1.default.http(`Easy-Peasy-Backend - server at http://localhost:${PORT}${server.graphqlPath}`));
 });
 startServer();

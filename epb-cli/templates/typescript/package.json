@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"nodemon index.ts\" \"node node_modules/@korenezri/easy-peasy-backend/epb/epb-server/build/index.js\"",
+    "dev": "concurrently \"serve -s node_modules/@korenezri/easy-peasy-backend/epb/client/build\" \"nodemon index.ts\" \"node node_modules/@korenezri/easy-peasy-backend/epb/epb-server/build/index.js\"",
     "build": "tsc --project ./"
   },
   "keywords": [],
