@@ -7,7 +7,6 @@ const parseArgumentsIntoOptions = (rawArgs) => {
   const args = arg(
     {
       "--git": Boolean,
-      "--yes": Boolean,
       "--install": Boolean,
       "-g": "--git",
       "-y": "--yes",
@@ -18,7 +17,6 @@ const parseArgumentsIntoOptions = (rawArgs) => {
     }
   );
   return {
-    skipPrompts: args["--yes"] || false,
     git: args["--git"] || false,
     template: args._[0],
     runInstall: args["--install"] || false,
@@ -33,7 +31,20 @@ const promptForMissingOptions = async (options) => {
       template: options.template || defaultTemplate,
     };
   }
-  const questions = [];
+  const questions = [
+    {
+      type: "list",
+      name: "database",
+      message: "Please choose a database to work with",
+      choices: ["MongoDB"],
+      default: "MongoDB",
+    },
+    {
+      type: "input",
+      name: "env",
+      message: "Database URI?",
+    },
+  ];
   if (!options.template) {
     questions.push({
       type: "list",
@@ -51,20 +62,6 @@ const promptForMissingOptions = async (options) => {
       default: false,
     });
   }
-  if (!options.database) {
-    questions.push({
-      type: "list",
-      name: "database",
-      message: "Please choose a database to work with",
-      choices: ["MongoDB"],
-      default: "MongoDB",
-    });
-  }
-  questions.push({
-    type: "input",
-    name: "env",
-    message: "Database URI?",
-  });
   const answers = await inquirer.prompt(questions);
   return {
     ...options,
@@ -79,7 +76,5 @@ export const cli = async (args) => {
   let options = parseArgumentsIntoOptions(args);
   options = await promptForMissingOptions(options);
   const res = await createProject(options);
-  if (res) {
-    await execa("npm run dev");
-  }
+  if (res) execa("npm run dev");
 };
