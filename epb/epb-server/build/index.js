@@ -45,6 +45,7 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
         typeDefs: typeDefs_1.typeDefs,
     });
     server.applyMiddleware({ app });
-    app.listen({ port: PORT }, () => logger_1.default.http(`Easy-Peasy-Backend - server at http://localhost:${PORT}${server.graphqlPath}`));
+    app.listen({ port: PORT }, () => logger_1.default.info(`EPB-server @ http://localhost:${PORT}${server.graphqlPath}`));
+    logger_1.default.http("Client @ http://localhost:5000");
 });
 startServer();

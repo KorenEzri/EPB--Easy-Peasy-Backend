@@ -5,6 +5,8 @@ const { gql } = require("apollo-server-express");
 exports.typeDefs = gql `
   scalar Date
   type Query {
-    test: String
+    getResolvers: String
+    getTypeDefs: String
+    getActions: [String]
   }
 `;

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolvers = void 0;
 const graphql_1 = require("graphql");
+const codeToString_1 = require("./utils/codeToString");
 const dateScalar = new graphql_1.GraphQLScalarType({
     name: "Date",
     parseValue(value) {
@@ -23,9 +24,14 @@ const dateScalar = new graphql_1.GraphQLScalarType({
 exports.resolvers = {
     Date: dateScalar,
     Query: {
-        test: () => __awaiter(void 0, void 0, void 0, function* () {
-            console.log("TEST PASSED!");
-            return "OK!";
+        getResolvers: () => __awaiter(void 0, void 0, void 0, function* () {
+            return yield codeToString_1.getResolvers(); // Action: get all resolvers
+        }),
+        getTypeDefs: () => __awaiter(void 0, void 0, void 0, function* () {
+            return yield codeToString_1.getTypeDefs(); // Action: get all type definitions
+        }),
+        getActions: () => __awaiter(void 0, void 0, void 0, function* () {
+            return yield codeToString_1.getActions(); // Action: get all actions
         }),
     },
 };
