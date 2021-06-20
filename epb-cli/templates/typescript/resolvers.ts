@@ -13,7 +13,7 @@ export const resolvers = {
   Date: dateScalar,
   Query: {
     test: async () => {
-      console.log("TEST PASSED!");
+      console.log("TEST PASSED!"); // Action: test
       return "OK!";
     },
   },

@@ -27,15 +27,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolvers = void 0;
 const graphql_1 = require("graphql");
 const codeToString_1 = require("./utils/codeToString");
 const create = __importStar(require("./utils/createNew"));
-const logger_1 = __importDefault(require("./logger/logger"));
+// added at: Sun Jun 20 2021 13:36:49 GMT+0300 (Israel Daylight Time)
+// generated interfaces end
+//
 const dateScalar = new graphql_1.GraphQLScalarType({
     name: "Date",
     parseValue(value) {
@@ -48,43 +47,29 @@ const dateScalar = new graphql_1.GraphQLScalarType({
 exports.resolvers = {
     Date: dateScalar,
     Query: {
-        // Action: get all resolvers
         getResolvers: () => __awaiter(void 0, void 0, void 0, function* () {
-            logger_1.default.info("HERE2");
-            return yield codeToString_1.getResolvers();
+            return yield codeToString_1.getResolvers(); // Action: get all resolvers
         }),
-        // Action: get all type definitions
         getTypeDefs: () => __awaiter(void 0, void 0, void 0, function* () {
-            logger_1.default.info("HERE3");
-            return yield codeToString_1.getTypeDefs();
+            return yield codeToString_1.getTypeDefs(); // Action: get all type definitions
         }),
-        // Action: get all actions
         getActions: () => __awaiter(void 0, void 0, void 0, function* () {
-            logger_1.default.info("HERE4");
-            return yield codeToString_1.getActions();
+            return yield codeToString_1.getActions(); // Action: get all actions
         }),
         // query-end
     },
     Mutation: {
-        // Action: create a new resolver (empty)
         createResolver: (_, { options }) => __awaiter(void 0, void 0, void 0, function* () {
-            try {
-                logger_1.default.info("Creating a new type definition...");
-                yield create.createNewTypeDef({ options: options });
-                logger_1.default.info("Creating a new resolver...");
-                yield create.createNewResolver({ options: options });
-                logger_1.default.info("Action created successfully.");
-                return "OK";
-            }
-            catch ({ message }) {
-                logger_1.default.error(message);
-                return "ERROR";
-            }
+            yield create.createNewTypeDef({ options: options });
+            yield create.createNewResolver({ options: options });
+            return "OK"; // Action: create a new resolver (empty)
         }),
-        // Action: create a new type definition (singular)
-        createCustomType: (_, { options }) => __awaiter(void 0, void 0, void 0, function* () {
-            //
-            // return String
+        GetCars: (_, { options }) => __awaiter(void 0, void 0, void 0, function* () {
+            // const o22222ne = 1;
+            let count = 3;
+            console.log("one + count", 'HEY!');
+            // test run!2
+            // return [Number]
         }),
         // mutation-end
     },
