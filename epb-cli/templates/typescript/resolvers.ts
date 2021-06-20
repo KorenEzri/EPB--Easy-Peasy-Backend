@@ -1,5 +1,6 @@
 import { GraphQLScalarType } from "graphql";
-
+// option types
+import {stubA, stub} from "./types"
 const dateScalar = new GraphQLScalarType({
   name: "Date",
   parseValue(value: string | number | Date) {
@@ -12,9 +13,19 @@ const dateScalar = new GraphQLScalarType({
 export const resolvers = {
   Date: dateScalar,
   Query: {
+    // Action: test
     test: async () => {
-      console.log("TEST PASSED!"); // Action: test
+      console.log("TEST PASSED!"); 
       return "OK!";
     },
+    // query-end
   },
+  Mutation: {
+    // Action: mutation test
+    test: async () => {
+      console.log("TEST PASSED!"); 
+      return 'OK';
+    },
+    // mutation-end
+  }
 };
