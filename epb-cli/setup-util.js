@@ -12,6 +12,16 @@ const writeToEnv = async (options) => {
   await write(`${options.targetDirectory}/.env`, `DB_URI="${options.env}"`);
 };
 const copyDatabaseFiles = async (options) => {
+  try {
+    await write(
+      `${options.targetDirectory}/epb.config.json`,
+      `{"database": "${options.database.toLowerCase()}"}`
+    );
+  } catch ({ message }) {
+    Logger.error(
+      "FAIL at setup-util.js at ~line 16 trying to insert DB type to epb.config.json, KOREN I TOLD YOU TO CHECK THIS"
+    );
+  }
   const currentFileUrl = import.meta.url;
   const databaseTemplateDir = path
     .resolve(
