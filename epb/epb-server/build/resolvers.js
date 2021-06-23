@@ -98,11 +98,11 @@ exports.resolvers = {
                     error = yield create.createNewResolver({ options: options });
                 if (!error)
                     return "OK";
-                return "ERROR";
+                return error;
             }
             catch ({ message }) {
                 logger_1.default.error(`FROM: EPB-server: ${message}`);
-                return "ERROR";
+                return message;
             }
         }),
         // Action: create a new type definition (singular)
@@ -116,7 +116,7 @@ exports.resolvers = {
             }
             catch ({ message }) {
                 logger_1.default.error(`FROM: EPB-server: ${message}`);
-                return "ERROR";
+                return message;
             }
         }),
         // Action: create a new database schema

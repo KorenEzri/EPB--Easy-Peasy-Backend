@@ -34,14 +34,12 @@ exports.checkIfOK = checkIfOK;
 const getResolvers = () => __awaiter(void 0, void 0, void 0, function* () {
     if (!(yield exports.checkIfOK("./resolvers.ts")))
         return;
-    logger_1.default.http("FROM: EPB-server: Sending resolvers as string..");
     return yield read("./resolvers.ts", "utf8");
 });
 exports.getResolvers = getResolvers;
 const getTypeDefs = () => __awaiter(void 0, void 0, void 0, function* () {
     if (!(yield exports.checkIfOK("./typeDefs.ts")))
         return;
-    logger_1.default.http("FROM: EPB-server: Sending typeDefs as string..");
     return yield read("./typeDefs.ts", "utf8");
 });
 exports.getTypeDefs = getTypeDefs;
