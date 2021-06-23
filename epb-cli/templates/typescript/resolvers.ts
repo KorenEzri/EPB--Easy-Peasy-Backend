@@ -1,6 +1,7 @@
 import { GraphQLScalarType } from "graphql";
 // option types
 import {stubA, stub} from "./types"
+// option types end
 const dateScalar = new GraphQLScalarType({
   name: "Date",
   parseValue(value: string | number | Date) {
