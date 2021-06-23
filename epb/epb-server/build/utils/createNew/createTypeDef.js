@@ -33,17 +33,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNewTypeOnly = exports.createNewTypeDef = void 0;
 const utils = __importStar(require("./string.util"));
-const prettier_1 = __importDefault(require("prettier"));
 const util_1 = require("util");
 const fs_1 = __importDefault(require("fs"));
 const codeToString_1 = require("../codeToString");
+const logger_1 = __importDefault(require("../../logger/logger"));
 const write = util_1.promisify(fs_1.default.writeFile);
 let typeDefInterface = {};
 const toTypeDef = ({ options }) => {
-    const { name, returnType, vars } = options;
+    const { name, returnType, properties } = options;
     let varList;
-    varList = utils.compileToVarList(vars);
-    if (vars.length < 3) {
+    varList = utils.compileToVarList(properties);
+    if (properties.length < 3) {
         varList = varList.map((variable) => {
             return `${variable.var}:${utils.capitalizeFirstLetter(variable.type)}`;
         });
@@ -55,7 +55,7 @@ const toTypeDef = ({ options }) => {
         varList = `options: ${name}Options`;
     }
     let typeDef;
-    vars.length
+    properties.length
         ? (typeDef = `${name}(${varList}): ${utils.capitalizeFirstLetter(returnType)}`)
         : (typeDef = `${name}: ${utils.capitalizeFirstLetter(returnType)}
     `);
@@ -68,10 +68,12 @@ const insertTypeDef = (splatTypeDefs, name, type) => {
         return splatTypeDefs;
     const index = splatTypeDefs.indexOf("# generated definitions");
     const interfaceString = `\n ${interfacePreFix} ${name}Options ${JSON.stringify(typeDefInterface, null, 2)}\n# added at: ${new Date()}`;
-    splatTypeDefs.splice(index + 1, 0, utils.replaceAllInString(interfaceString, '"', ""));
+    let finishedInterfaceDef = utils.replaceAllInString(interfaceString, '"', "");
+    splatTypeDefs.splice(index + 1, 0, finishedInterfaceDef);
     return splatTypeDefs;
 };
 const createNewTypeDef = ({ options }) => __awaiter(void 0, void 0, void 0, function* () {
+    logger_1.default.http("FROM: EPB-server: Creating a new type definition...");
     // compile a type definition string from options
     const fullTypeDef = toTypeDef({ options: options });
     const typeDefs = yield codeToString_1.getTypeDefs(); // current typeDef file as string
@@ -83,14 +85,12 @@ const createNewTypeDef = ({ options }) => __awaiter(void 0, void 0, void 0, func
         ? (indexToPush = splatTypeDefs.indexOf("# mutation-end"))
         : (indexToPush = splatTypeDefs.indexOf("# query-end"));
     // push into line indexToPush the compiled typeDef.
-    splatTypeDefs.splice(indexToPush, 0, fullTypeDef);
+    if (!splatTypeDefs.includes(fullTypeDef))
+        splatTypeDefs.splice(indexToPush, 0, fullTypeDef);
     // insert input type / query type (interface) into typeDefs if needed
-    const revisedTypeDefs = insertTypeDef(splatTypeDefs, options.name, options.type).join("\n");
-    const formatted = prettier_1.default.format(utils.replaceAllInString(revisedTypeDefs, "Number", "Int"), {
-        semi: false,
-        parser: "babel",
-    });
-    yield write("./typeDefs.ts", formatted);
+    let revisedTypeDefs = insertTypeDef(splatTypeDefs, options.name, options.type).join("\n");
+    revisedTypeDefs = utils.replaceAllInString(revisedTypeDefs, "Number", "Int");
+    yield write("./typeDefs.ts", revisedTypeDefs);
 });
 exports.createNewTypeDef = createNewTypeDef;
 const createNewTypeOnly = (options) => __awaiter(void 0, void 0, void 0, function* () { });

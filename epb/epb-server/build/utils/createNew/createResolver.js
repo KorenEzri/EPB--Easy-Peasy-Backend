@@ -36,20 +36,19 @@ const utils = __importStar(require("./string.util"));
 const util_1 = require("util");
 const fs_1 = __importDefault(require("fs"));
 const codeToString_1 = require("../codeToString");
-const prettier_1 = __importDefault(require("prettier"));
+const _1 = require("./");
 const logger_1 = __importDefault(require("../../logger/logger"));
 const write = util_1.promisify(fs_1.default.writeFile);
-const read = util_1.promisify(fs_1.default.readFile);
 let varInterface = {};
 const toResolver = ({ options }) => {
-    const { name, comment, returnType, vars, description } = options;
+    const { name, comment, returnType, properties, description } = options;
     let parsedComment;
     let varList;
-    varList = utils.compileToVarList(vars);
+    varList = utils.compileToVarList(properties);
     comment.split("//").length
         ? (parsedComment = comment)
         : (parsedComment = `// ${comment}`);
-    if (vars.length < 3) {
+    if (properties.length < 3) {
         varList = varList.map((variable) => {
             return `${variable.var}:${variable.type}`;
         });
@@ -57,7 +56,8 @@ const toResolver = ({ options }) => {
     else {
         varInterface.options = {};
         varList.forEach((variable) => {
-            varInterface.options[variable.var] = variable.type.trim().toLowerCase();
+            const lowerCaseVar = utils.fixTypes(variable);
+            varInterface.options[variable.var] = lowerCaseVar;
         });
         varList = `{ options }:${name}Options`;
     }
@@ -69,43 +69,42 @@ const toResolver = ({ options }) => {
     },
       `;
 };
-const insert_Into_Types_Index_TS = (exportStatement) => __awaiter(void 0, void 0, void 0, function* () {
-    const typeIndexPath = "./types/index.ts";
-    try {
-        const isOK = yield codeToString_1.checkIfOK(typeIndexPath);
-        if (!isOK)
-            return "ERROR";
-        const typeIndexFile = yield read(typeIndexPath, "utf8");
-        try {
-            const assorted = typeIndexFile.split("\n");
-            assorted.push(exportStatement);
-            yield write(typeIndexPath, assorted.join("\n"));
-        }
-        catch ({ message }) {
-            logger_1.default.error(message);
-            return "ERROR";
-        }
-    }
-    catch ({ message }) {
-        logger_1.default.error(message);
-        return "ERROR";
-    }
-});
 const insertInterface = (splatResolvers, name) => __awaiter(void 0, void 0, void 0, function* () {
     if (!Object.values(varInterface).length)
         return splatResolvers;
-    const index = splatResolvers.indexOf("// option types");
-    const importStateMent = `${splatResolvers[index + 1]}`.split(",");
-    importStateMent.splice(1, 0, ` ${name}Options`);
-    splatResolvers.splice(index + 1, 1, importStateMent.join(","));
-    const interfaceString = `export interface ${name}Options ${JSON.stringify(varInterface, null, 2)}\n// added at: ${new Date()}`;
-    yield write(`./types/${name}Options.ts`, utils.replaceAllInString(interfaceString, '"', ""));
-    yield insert_Into_Types_Index_TS(`export * from "./${name}Options"`);
+    const startIndex = splatResolvers.indexOf("// option types");
+    const endIndex = splatResolvers.indexOf("// option types end");
+    const importStatement = splatResolvers
+        .map((line, index) => {
+        if (index >= startIndex + 1 && index <= endIndex - 1) {
+            return line;
+        }
+    })
+        .filter((v) => {
+        return v != null;
+    });
+    if (!importStatement[0])
+        return;
+    if (importStatement.length > 1) {
+        importStatement.splice(1, 0, ` ${name}Options,`);
+        splatResolvers.splice(startIndex + 1, endIndex - startIndex - 1, importStatement.join(""));
+    }
+    else {
+        const splat = importStatement[0].split(",");
+        splat[0] = `${splat[0]}, ${name}Options`;
+        splatResolvers.splice(startIndex + 1, 1, splat.join(","));
+    }
+    let interfaceString = `export interface ${name}Options ${JSON.stringify(varInterface, null, 2)}\n// added at: ${new Date()}`;
+    interfaceString = utils.replaceAllInString(interfaceString, '"', "");
+    interfaceString = utils.replaceAllInString(interfaceString, "||", "|");
+    yield write(`./types/${name}Options.ts`, interfaceString);
+    yield _1.insert_Into_Types_Index_TS(`export * from "./${name}Options"`);
     return splatResolvers;
 });
 const createNewResolver = ({ options }) => __awaiter(void 0, void 0, void 0, function* () {
+    logger_1.default.http("FROM: EPB-server: Creating a new resolver...");
     // compile a resolver string from options
-    const fullResolver = toResolver({ options: options });
+    const fullResolver = utils.replaceAllInString(toResolver({ options: options }), "\t", "");
     const resolvers = yield codeToString_1.getResolvers(); // current resolver file as string
     if (!resolvers)
         return "ERROR";
@@ -119,11 +118,13 @@ const createNewResolver = ({ options }) => __awaiter(void 0, void 0, void 0, fun
     // push into line indexToPush the compiled resolver.
     splatResolvers.splice(indexToPush, 0, fullResolver);
     // insert interface into resolvers if needed.
-    const revisedResolvers = yield insertInterface(splatResolvers, options.name);
-    const formatted = prettier_1.default.format(revisedResolvers.join("\n"), {
-        semi: false,
-        parser: "babel",
-    });
-    yield write("./resolvers.ts", formatted);
+    const insertedInterface = yield insertInterface(splatResolvers, options.name);
+    if (!insertedInterface)
+        return "ERROR";
+    const revisedResolvers = insertedInterface.join("\n");
+    yield write("./resolvers.ts", revisedResolvers);
+    logger_1.default.http("FROM: EPB-server: Action created successfully, applying Prettier for files..");
+    yield utils.applyPrettier();
+    return;
 });
 exports.createNewResolver = createNewResolver;

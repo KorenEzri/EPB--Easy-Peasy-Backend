@@ -13,3 +13,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ResolverOptions"), exports);
 __exportStar(require("./stub"), exports);
 __exportStar(require("./createCustomTypeOptions"), exports);
+__exportStar(require("./createSchemaOptions"), exports);
