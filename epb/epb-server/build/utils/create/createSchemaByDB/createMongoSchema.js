@@ -32,12 +32,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createMongoDBSchema = void 0;
+const create_1 = require("../../create");
 const imports_1 = require("../../../consts/imports");
 const logger_1 = __importDefault(require("../../../logger/logger"));
 const utils = __importStar(require("../../utils"));
 const util_1 = require("util");
 const fs_1 = __importDefault(require("fs"));
 const write = util_1.promisify(fs_1.default.writeFile);
+const read = util_1.promisify(fs_1.default.readFile);
+const updateInterfaceFile = ({ options }) => __awaiter(void 0, void 0, void 0, function* () {
+    const interfaceFilePath = `./types/${options.name}Options.ts`;
+    const interfaceFile = yield read(interfaceFilePath, "utf8");
+    const splat = interfaceFile.split("\n");
+    const importStartIndex = splat.indexOf("// imports section") + 1;
+    const importEndIndex = splat.indexOf("// imports section end");
+    const imports = splat.slice(importStartIndex, importEndIndex - 1);
+    imports.push("import { Document } from 'mongoose'");
+    splat.splice(importStartIndex, importEndIndex - importStartIndex, imports.join("\n"));
+    const exportStartIndex = splat.indexOf("// exports section") + 1;
+    const exportEndIndex = splat.indexOf("// exports section end");
+    splat.splice(exportStartIndex, exportEndIndex - exportStartIndex, `export interface ${options.name}Doc extends Document, ${options.name}Options {}`);
+    yield write(interfaceFilePath, splat.join("\n"));
+});
 const toMongoSchema = (options) => {
     const { properties, name, comment, uniqueIdentifiers } = options.options;
     const mongoImportsList = imports_1.imports.statements.db.mongodb;
@@ -75,8 +91,10 @@ const writeSchemaToFile = (name, schema) => __awaiter(void 0, void 0, void 0, fu
 });
 const createMongoDBSchema = ({ options }) => __awaiter(void 0, void 0, void 0, function* () {
     logger_1.default.http("FROM: EPB-server: Creating a MongoDB schema...");
+    yield create_1.createNewInterface({ options: options });
     const mongoDBSchema = toMongoSchema({ options: options });
-    logger_1.default.http("FROM: EPB-server: Schema created, applying...");
+    logger_1.default.http("FROM: EPB-server: Schema created, updating interface file to include a mongo document export...");
+    yield updateInterfaceFile({ options: options });
     let error = yield writeSchemaToFile(options.name, mongoDBSchema);
     if (error)
         return error;

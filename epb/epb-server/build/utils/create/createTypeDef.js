@@ -33,11 +33,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNewTypeDef = void 0;
 const codeToString_1 = require("../codeToString");
-const logger_1 = __importDefault(require("../../logger/logger"));
 const util_1 = require("util");
+const logger_1 = __importDefault(require("../../logger/logger"));
 const fs_1 = __importDefault(require("fs"));
 const utils = __importStar(require("../utils"));
-const utils_1 = require("../utils");
 const write = util_1.promisify(fs_1.default.writeFile);
 const grabTypeDefsAndInsertNewTypeDef = (name, properties, type, returnType) => __awaiter(void 0, void 0, void 0, function* () {
     const { typeDef, typeDefInterface } = fromOptionsToGQLTypeDefinition(name, properties, returnType);
@@ -45,12 +44,15 @@ const grabTypeDefsAndInsertNewTypeDef = (name, properties, type, returnType) => 
     if (!allTypeDefsAsString)
         return "Error with utils/createNew/createTypeDef.ts, getTypeDefs() returned undefined!";
     const typeDefLineArray = utils.toLineArray(allTypeDefsAsString);
-    if (typeDefLineArray.includes(typeDef))
+    if (typeDefLineArray.includes(typeDef) ||
+        utils.isCustomType(`${name}Options`)) {
         // check if typeDef already exists
         return "Duplicate type definitions detected, aborting..";
+    }
     let finishedTypeDefs = insertTypeDefInterface(allTypeDefsAsString, name, typeDefInterface, type, returnType);
     let typeInsertEndIndex = type === "Query" ? "# query-end" : "# mutation-end";
-    typeInsertEndIndex = utils_1.toLineArray(finishedTypeDefs)
+    typeInsertEndIndex = utils
+        .toLineArray(finishedTypeDefs)
         .map((line) => line.trim())
         .indexOf(typeInsertEndIndex);
     if (returnType) {
@@ -82,8 +84,10 @@ const insertTypeDefInterface = (typeDefs, name, typeDefInterface, type, returnTy
         interfacePreFix = "input";
     const handlerA = "# generated definitions";
     const interfaceString = JSON.stringify(typeDefInterface, null, 2);
-    const typeDef = `\n ${interfacePreFix} ${name}Options ${interfaceString}\n# added at: ${new Date()}`;
-    let finishedInterfaceDef = utils.replaceAllInString(typeDef, ['"', "Number"], ["", "Int"]);
+    const typeDef = interfaceString
+        ? `\n ${interfacePreFix} ${name}Options ${interfaceString}\n# added at: ${new Date()}`
+        : undefined;
+    let finishedInterfaceDef = utils.replaceAllInString(typeDef || "", ['"', "Number"], ["", "Int"]);
     const finishedTypeDefs = utils.pushIntoString(typeDefs, handlerA, 0, finishedInterfaceDef);
     return finishedTypeDefs;
 };

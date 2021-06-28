@@ -70,9 +70,15 @@ const insertImportStatement = (resolvers, name) => {
 const toResolver = ({ options }) => {
     const { name, comment, returnType, properties, description } = options;
     const { resolverInterface, varList } = utils.parseResolverVarlist(properties);
+    let stringifiedVarList = [];
+    if (Array.isArray(varList)) {
+        stringifiedVarList = varList.map((variable) => {
+            return `${variable.name}:${variable.type}`;
+        });
+    }
     let resolverString = `
         // Action: ${description}
-        ${name}: async (_:any, ${resolverInterface ? `{ options }:${name}Options` : varList}) => {
+        ${name}: async (_:any, ${resolverInterface ? `{ options }:${name}Options` : stringifiedVarList}) => {
           // ${comment}
           // return ${returnType}
       },

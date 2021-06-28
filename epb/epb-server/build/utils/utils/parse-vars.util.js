@@ -19,16 +19,29 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseTypeDefVarlist = exports.parseMongoVarlist = exports.parseResolverVarlist = exports.parseInterfaceVarlist = exports.isCustomType = void 0;
+exports.parseTypeDefVarlist = exports.parseMongoVarlist = exports.parseResolverVarlist = exports.parseInterfaceVarlist = exports.parseArrayOperatorTypes = exports.isCustomType = void 0;
 const consts_1 = require("../../consts");
 const utils = __importStar(require("."));
 // for graphQL types I add "Type" || "Input" accordingly to definition names,
 // so users can make both type and input definitions.
 const isCustomType = (type) => {
-    return consts_1.allCustomTypes.includes(type) ? true : false;
+    if (type.toLowerCase() === "date")
+        return false;
+    return consts_1.allCustomTypesWithArrayTypes.includes(type) ? true : false;
 };
 exports.isCustomType = isCustomType;
 // checks if the type is a custom type (IE an existing type that is not string, number, etc)
+const parseArrayOperatorTypes = (type) => {
+    if (type.includes("[") && type.includes("]")) {
+        let typeString = type.split("[").join("").split("]");
+        typeString = typeString + "[]";
+        typeString = typeString.split(",").join("");
+        return typeString;
+    }
+    else
+        return type;
+};
+exports.parseArrayOperatorTypes = parseArrayOperatorTypes;
 const parseInterfaceVarlist = (vars) => {
     let varList = utils.splitNameType(vars);
     let importList = [];
@@ -42,6 +55,7 @@ const parseInterfaceVarlist = (vars) => {
         else {
             type = type.toLowerCase();
         }
+        type = exports.parseArrayOperatorTypes(type);
         type = utils.replaceAllInString(type, "int", "number");
         type = utils.replaceAllInString(type, "Int", "number");
         type = utils.replaceAllInString(type, "date", "Date");
@@ -66,7 +80,8 @@ const parseResolverVarlist = (vars) => {
         type = utils.replaceAllInString(type, "int", "number");
         type = utils.replaceAllInString(type, "Int", "number");
         type = utils.replaceAllInString(type, "date", "Date");
-        resolverInterface.options[variable.name] = type;
+        if (resolverInterface)
+            resolverInterface.options[variable.name] = type;
         return { name: variable.name, type };
     });
     return { resolverInterface, varList };
@@ -113,7 +128,7 @@ const parseMongoVarlist = (vars, uniques) => {
         return { importList: [], varList };
     varList = varList.map((variable) => {
         let type = utils.removeLastWordFromString(variable.type, ["Type", "Input"]);
-        if (!exports.isCustomType(type)) {
+        if (exports.isCustomType(type)) {
             type = "Object";
         }
         type = utils.replaceAllInString(type, "int", "number");

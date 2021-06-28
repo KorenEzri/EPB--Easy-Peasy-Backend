@@ -1,18 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validTypes = exports.validResolverTypes = exports.allCustomTypes = void 0;
+exports.validTypes = exports.allCustomTypesWithArrayTypes = exports.validResolverTypes = exports.allCustomTypes = void 0;
 const typeDefs_1 = require("../typeDefs");
 exports.allCustomTypes = typeDefs_1.typeDefs.definitions.map((definition) => definition.name.value);
 exports.validResolverTypes = ["Query", "Mutation"];
+const customTypesAsGQLArrays = exports.allCustomTypes.map((type) => {
+    return `[${type}]`;
+});
+const customTypesAsTSArrays = exports.allCustomTypes.map((type) => {
+    return `${type}[]`;
+});
+exports.allCustomTypesWithArrayTypes = customTypesAsTSArrays
+    .concat(customTypesAsGQLArrays)
+    .concat(exports.allCustomTypes);
 exports.validTypes = [
     "string",
+    "string[]",
     "String",
+    "String[]",
     "number",
+    "number[]",
     "Number",
+    "Number[]",
     "boolean",
+    "boolean[]",
     "Boolean",
+    "Boolean[]",
     "date",
+    "date[]",
     "Date",
+    "Date[]",
     "[string]",
     "[String]",
     "[number]",
@@ -22,7 +39,9 @@ exports.validTypes = [
     "[date]",
     "[Date]",
     "int",
+    "int[]",
     "Int",
+    "Int[]",
     "[int]",
     "[Int]",
-].concat(exports.allCustomTypes);
+].concat(exports.allCustomTypesWithArrayTypes);
