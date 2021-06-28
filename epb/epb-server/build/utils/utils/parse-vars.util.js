@@ -147,7 +147,7 @@ exports.parseMongoVarlist = parseMongoVarlist;
 //
 const parseTypeDefVarlist = (vars, name) => {
     const varList = utils.splitNameType(vars);
-    const typeDefAsInterface = vars.length < 3 ? undefined : {};
+    const typeDefAsInterface = vars.length < 1 ? undefined : {};
     // if we have more than three properties, create a type definition especially for the custom type.
     // else, we'll just add the properties as params in the query/mutation.
     if (!Array.isArray(varList))
@@ -174,11 +174,12 @@ const parseTypeDefVarlist = (vars, name) => {
             typeDefInterface: typeDefAsInterface,
         };
     }
-    else
+    else {
         return {
             varList: variableStringList,
             typeDefInterface: typeDefAsInterface,
         };
+    }
 };
 exports.parseTypeDefVarlist = parseTypeDefVarlist;
 //takes a string[] of foo:type elements and parses it, returns varList - ['foo:Type', 'bar:Type'] and typeDefInterface.

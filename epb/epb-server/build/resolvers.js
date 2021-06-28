@@ -54,6 +54,7 @@ const graphql_1 = require("graphql");
 const validations_1 = require("./validations");
 // option types end
 const codeToString_1 = require("./utils/codeToString");
+const utils = __importStar(require("./utils/utils"));
 const create = __importStar(require("./utils/create"));
 const add = __importStar(require("./utils/prebuiltActions"));
 const logger_1 = __importDefault(require("./logger/logger"));
@@ -100,6 +101,9 @@ exports.resolvers = {
                 const resolverCreationRes = yield create.createNewResolver({
                     options: options,
                 });
+                setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+                    yield utils.restartServer();
+                }), 1000);
                 return resolverCreationRes;
             }
             catch ({ message }) {
@@ -116,6 +120,9 @@ exports.resolvers = {
                 const interfaceCreationRes = yield create.createNewInterface({
                     options: options,
                 });
+                setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+                    yield utils.restartServer();
+                }), 1000);
                 return interfaceCreationRes;
             }
             catch ({ message }) {
@@ -132,6 +139,9 @@ exports.resolvers = {
                 const schemaCreationRes = yield create.createDbSchema({
                     options: options,
                 });
+                setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+                    yield utils.restartServer();
+                }), 1000);
                 return schemaCreationRes;
             }
             catch ({ message }) {

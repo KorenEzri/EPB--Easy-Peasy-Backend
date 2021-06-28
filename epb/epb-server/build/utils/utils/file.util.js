@@ -31,7 +31,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkIfFileAlreadyExists = exports.checkIfOK = exports.applyPrettier = exports.addExportStatement = void 0;
+exports.restartServer = exports.addToAllowedTypes = exports.checkIfFileAlreadyExists = exports.checkIfOK = exports.applyPrettier = exports.addExportStatement = void 0;
+const consts_1 = require("../../consts");
 const logger_1 = __importDefault(require("../../logger/logger"));
 const fs_1 = __importDefault(require("fs"));
 const execa_1 = __importDefault(require("execa"));
@@ -41,6 +42,7 @@ const write = util_1.promisify(fs_1.default.writeFile);
 const read = util_1.promisify(fs_1.default.readFile);
 const readDir = util_1.promisify(fs_1.default.readdir);
 const access = util_1.promisify(fs_1.default.access);
+const unlink = util_1.promisify(fs_1.default.unlink);
 const addExportStatement = (filePath, exportStatement) => __awaiter(void 0, void 0, void 0, function* () {
     const path = `${filePath}/index.ts`;
     try {
@@ -94,3 +96,13 @@ const checkIfFileAlreadyExists = (dirPath, fileName) => __awaiter(void 0, void 0
         return false;
 });
 exports.checkIfFileAlreadyExists = checkIfFileAlreadyExists;
+const addToAllowedTypes = (name) => {
+    consts_1.allCustomTypesWithArrayTypes.push(`[${name}Options]`);
+    consts_1.allCustomTypesWithArrayTypes.push(`${name}Options[]`);
+    consts_1.allCustomTypesWithArrayTypes.push(`${name}Options`);
+};
+exports.addToAllowedTypes = addToAllowedTypes;
+const restartServer = () => __awaiter(void 0, void 0, void 0, function* () {
+    yield write("restart.json", `{"restart":"${Math.random()}"}`);
+});
+exports.restartServer = restartServer;

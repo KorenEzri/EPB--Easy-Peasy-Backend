@@ -32,12 +32,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNewTypeDef = void 0;
+const typeDefs_1 = require("../../typeDefs");
 const codeToString_1 = require("../codeToString");
 const util_1 = require("util");
 const logger_1 = __importDefault(require("../../logger/logger"));
 const fs_1 = __importDefault(require("fs"));
 const utils = __importStar(require("../utils"));
 const write = util_1.promisify(fs_1.default.writeFile);
+const allTypeDefinitions = typeDefs_1.typeDefs.definitions.map((definition) => definition.name.value.trim());
 const grabTypeDefsAndInsertNewTypeDef = (name, properties, type, returnType) => __awaiter(void 0, void 0, void 0, function* () {
     const { typeDef, typeDefInterface } = fromOptionsToGQLTypeDefinition(name, properties, returnType);
     const allTypeDefsAsString = yield codeToString_1.getTypeDefs(); // current typeDef file as string
@@ -45,9 +47,13 @@ const grabTypeDefsAndInsertNewTypeDef = (name, properties, type, returnType) => 
         return "Error with utils/createNew/createTypeDef.ts, getTypeDefs() returned undefined!";
     const typeDefLineArray = utils.toLineArray(allTypeDefsAsString);
     if (typeDefLineArray.includes(typeDef) ||
-        utils.isCustomType(`${name}Options`)) {
+        utils.isCustomType(`${name}Options`) ||
+        allTypeDefinitions.includes(`${name.trim()}Options`)) {
         // check if typeDef already exists
-        return "Duplicate type definitions detected, aborting..";
+        return { error: "Duplicate type definitions detected, aborting.." };
+    }
+    else {
+        allTypeDefinitions.push(`${name.trim()}Options`);
     }
     let finishedTypeDefs = insertTypeDefInterface(allTypeDefsAsString, name, typeDefInterface, type, returnType);
     let typeInsertEndIndex = type === "Query" ? "# query-end" : "# mutation-end";
@@ -96,8 +102,10 @@ const createNewTypeDef = ({ options, }) => __awaiter(void 0, void 0, void 0, fun
     try {
         const res = yield grabTypeDefsAndInsertNewTypeDef(options.name, options.properties, options.type, options.returnType);
         // calls fromOptionsToGQLTypeDefinition()
-        if (!res) {
-            logger_1.default.error("Error creating type definition!");
+        if (!res || res.error) {
+            logger_1.default.error(`Error creating type definition! ${res.error}`);
+            if (res.error)
+                return res.error;
             return res;
         }
         yield write("./typeDefs.ts", res);

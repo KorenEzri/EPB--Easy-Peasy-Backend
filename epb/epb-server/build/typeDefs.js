@@ -8,14 +8,6 @@ exports.typeDefs = gql `
 
   # generated definitions
 
-  type avatarOptionsType {
-    id: String
-    kaki: Int
-    amount: [String]
-  }
-  #asdasda
-  # added at: Sat Jun 26 2021 10:01:17 GMT+0300 (Israel Daylight Time)
-
   input addUserAuthOptions {
     publicUserInputs: [String]
     authUserInputs: [String]
@@ -63,7 +55,6 @@ exports.typeDefs = gql `
     getTypeDefs: String
     getActions: [String]
     getAllResolverNames: [String]
-
     # query-end
   }
   type Mutation {
