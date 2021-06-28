@@ -35,12 +35,11 @@ exports.validateUniqueSchemaName = exports.parseOptions = exports.validateUnique
 const codeToString_1 = require("../utils/codeToString");
 const utils_1 = require("../utils/utils");
 const logger_1 = __importDefault(require("../logger/logger"));
-const consts_1 = require("../consts");
 const resolvers_1 = require("../resolvers");
 const schemas = __importStar(require("../db/schemas"));
 const joi_1 = __importDefault(require("joi"));
 const typeSchema = joi_1.default.object({
-    types: joi_1.default.array().items(joi_1.default.string().valid(...consts_1.validTypes)),
+    types: joi_1.default.array().items(joi_1.default.string()),
 });
 const validateTypeList = (typeList) => {
     let allTypes = [];

@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateResolverCreation = exports.resolverSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const logger_1 = __importDefault(require("../logger/logger"));
-const consts_1 = require("../consts");
 const _1 = require("./");
 const validation_util_1 = require("./validation.util");
 const interval = setInterval(() => {
@@ -25,9 +24,7 @@ const interval = setInterval(() => {
                 name: joi_1.default.string()
                     .required()
                     .invalid(..._1.allTypeNames),
-                type: joi_1.default.string()
-                    .required()
-                    .valid(...consts_1.validResolverTypes),
+                type: joi_1.default.string().required(),
                 returnType: joi_1.default.string().required(),
                 description: joi_1.default.string().required(),
                 properties: joi_1.default.array(),
