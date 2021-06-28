@@ -32,20 +32,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateUniqueSchemaName = exports.parseOptions = exports.validateUnique = exports.validateVars = void 0;
-const resolvers_1 = require("../resolvers");
-const consts_1 = require("../consts");
 const codeToString_1 = require("../utils/codeToString");
+const utils_1 = require("../utils/utils");
+const logger_1 = __importDefault(require("../logger/logger"));
+const consts_1 = require("../consts");
+const resolvers_1 = require("../resolvers");
 const schemas = __importStar(require("../db/schemas"));
 const joi_1 = __importDefault(require("joi"));
-const logger_1 = __importDefault(require("../logger/logger"));
-const string_util_1 = require("../utils/createNew/string.util");
 const typeSchema = joi_1.default.object({
     types: joi_1.default.array().items(joi_1.default.string().valid(...consts_1.validTypes)),
 });
 const validateTypeList = (typeList) => {
     let allTypes = [];
-    allTypes = string_util_1.replaceAllInString(typeList.join(","), "||", ",").split(",");
-    allTypes = string_util_1.replaceAllInString(allTypes.join(","), "|", ",").split(",");
+    allTypes = utils_1.replaceAllInString(typeList.join(","), "||", ",").split(",");
+    allTypes = utils_1.replaceAllInString(allTypes.join(","), "|", ",").split(",");
     allTypes = allTypes.map((type) => type.trim());
     const { error, value } = typeSchema.validate({ types: allTypes });
     if (error) {

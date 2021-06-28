@@ -32,46 +32,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNewResolver = void 0;
-const utils = __importStar(require("./string.util"));
+const codeToString_1 = require("../codeToString");
+const logger_1 = __importDefault(require("../../logger/logger"));
+const _1 = require("./");
 const util_1 = require("util");
 const fs_1 = __importDefault(require("fs"));
-const codeToString_1 = require("../codeToString");
-const _1 = require("./");
-const logger_1 = __importDefault(require("../../logger/logger"));
+const utils = __importStar(require("../utils"));
 const write = util_1.promisify(fs_1.default.writeFile);
-let varInterface = {};
-const toResolver = ({ options }) => {
-    const { name, comment, returnType, properties, description } = options;
-    let parsedComment;
-    let varList;
-    varList = utils.compileToVarList(properties);
-    comment.split("//").length
-        ? (parsedComment = comment)
-        : (parsedComment = `// ${comment}`);
-    if (properties.length < 3) {
-        varList = varList.map((variable) => {
-            return `${variable.var}:${variable.type}`;
-        });
-    }
-    else {
-        varInterface.options = {};
-        varList.forEach((variable) => {
-            const lowerCaseVar = utils.fixTypes(variable);
-            varInterface.options[variable.var] = lowerCaseVar;
-        });
-        varList = `{ options }:${name}Options`;
-    }
-    return `
-      // Action: ${description}
-      ${name}: async (_:any, ${varList}) => {
-        // ${parsedComment}
-        // return ${returnType}
-    },
-      `;
-};
-const insertInterface = (splatResolvers, name) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!Object.values(varInterface).length)
-        return splatResolvers;
+const insertImportStatement = (resolvers, name) => {
+    const splatResolvers = utils
+        .toLineArray(resolvers)
+        .map((line) => line.trim());
     const startIndex = splatResolvers.indexOf("// option types");
     const endIndex = splatResolvers.indexOf("// option types end");
     const importStatement = splatResolvers
@@ -84,7 +55,7 @@ const insertInterface = (splatResolvers, name) => __awaiter(void 0, void 0, void
         return v != null;
     });
     if (!importStatement[0])
-        return;
+        return "err";
     if (importStatement.length > 1) {
         importStatement.splice(1, 0, ` ${name}Options,`);
         splatResolvers.splice(startIndex + 1, endIndex - startIndex - 1, importStatement.join(""));
@@ -94,37 +65,40 @@ const insertInterface = (splatResolvers, name) => __awaiter(void 0, void 0, void
         splat[0] = `${splat[0]}, ${name}Options`;
         splatResolvers.splice(startIndex + 1, 1, splat.join(","));
     }
-    let interfaceString = `export interface ${name}Options ${JSON.stringify(varInterface, null, 2)}\n// added at: ${new Date()}`;
-    interfaceString = utils.replaceAllInString(interfaceString, '"', "");
-    interfaceString = utils.replaceAllInString(interfaceString, "||", "|");
-    yield write(`./types/${name}Options.ts`, interfaceString);
-    yield _1.insert_Into_Types_Index_TS(`export * from "./${name}Options"`);
-    return splatResolvers;
-});
+    return splatResolvers.join("\n");
+};
+const toResolver = ({ options }) => {
+    const { name, comment, returnType, properties, description } = options;
+    const { resolverInterface, varList } = utils.parseResolverVarlist(properties);
+    let resolverString = `
+        // Action: ${description}
+        ${name}: async (_:any, ${resolverInterface ? `{ options }:${name}Options` : varList}) => {
+          // ${comment}
+          // return ${returnType}
+      },
+        `;
+    resolverString = utils.replaceAllInString(resolverString, "\t", "");
+    resolverString = utils.replaceAllInString(resolverString, '"', "");
+    return resolverString;
+};
 const createNewResolver = ({ options }) => __awaiter(void 0, void 0, void 0, function* () {
     logger_1.default.http("FROM: EPB-server: Creating a new resolver...");
-    // compile a resolver string from options
-    const fullResolver = utils.replaceAllInString(toResolver({ options: options }), "\t", "");
-    const resolvers = yield codeToString_1.getResolvers(); // current resolver file as string
-    if (!resolvers)
+    const fullResolver = toResolver({ options: options });
+    let allResolversAsString = yield codeToString_1.getResolvers(); // current resolver file as string
+    if (!allResolversAsString)
         return "Error in utils/createNew/createResolver.ts: No resolvers found!";
-    const splatResolvers = resolvers
-        .split("\n")
-        .map((line) => line.trim());
-    let indexToPush; // The index (line number) in which the next resolver is meant to enter.
-    options.type.toLowerCase() === "mutation" // mutation or query? different line number
-        ? (indexToPush = splatResolvers.indexOf("// mutation-end"))
-        : (indexToPush = splatResolvers.indexOf("// query-end"));
-    // push into line indexToPush the compiled resolver.
-    splatResolvers.splice(indexToPush, 0, fullResolver);
-    // insert interface into resolvers if needed.
-    const insertedInterface = yield insertInterface(splatResolvers, options.name);
-    if (!insertedInterface)
-        return "Error in utils/createNew/createResolver.ts - @ insertInterfae() - returned undefined!";
-    const revisedResolvers = insertedInterface.join("\n");
-    yield write("./resolvers.ts", revisedResolvers);
+    if (options.properties.length >= 3) {
+        let interfaceOptions = {};
+        Object.assign(interfaceOptions, options);
+        yield _1.createNewInterface({ options: interfaceOptions });
+        allResolversAsString = insertImportStatement(allResolversAsString, options.name);
+    }
+    const finishedResolvers = utils.insertToString(allResolversAsString, fullResolver, options.type, "//");
+    if (!finishedResolvers)
+        return "Error in utils/createNew/createResolver.ts - @ insertToString() - returned undefined!";
+    yield write("./resolvers.ts", finishedResolvers);
     logger_1.default.http("FROM: EPB-server: Action created successfully, applying Prettier for files..");
     yield utils.applyPrettier();
-    return;
+    return "Resolver created successfully.";
 });
 exports.createNewResolver = createNewResolver;

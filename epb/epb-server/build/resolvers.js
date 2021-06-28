@@ -33,16 +33,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolvers = void 0;
 const graphql_1 = require("graphql");
-// TODO: 22/06/21
-//  - DONE:  add support for || in type system // DONE;
-//  - add backend validations for DB schema creation (make it flexy!!!!)
-//  - add singular DB schema creation
-//  - finish adding DB schemas
-//  - code cleanup
-//////////// DUE: 23.06.21, Sunday. //////////////////
+// TODO:
+// CHECK BEST PRACTICE FOR WHERE TO STORE RESOLVER.TS AND TYPEDEF.TS
+//  creating typeDef bugs: 1. typedef structure is nameOptions: { options: {}, kaki:string, ... }
 // TODO:
 //  - add prebuilt actions: {
-//    - user auth - four days
+//    - user auth - four days {
+// -  TODO:
+// -        - add option - i forgot what it was.. OH! add custom types to be available as return or receive types when creating interfaces
+// -        - add auto export of schemas from index.ts of db schema folder.
+// }
 //    - CRUD operations for DB schema - four days
 //    - Scalar type creator!! Then, add suppport for || in typedef creation as well.
 // {
@@ -54,7 +54,8 @@ const graphql_1 = require("graphql");
 const validations_1 = require("./validations");
 // option types end
 const codeToString_1 = require("./utils/codeToString");
-const create = __importStar(require("./utils/createNew"));
+const create = __importStar(require("./utils/create"));
+const add = __importStar(require("./utils/prebuiltActions"));
 const logger_1 = __importDefault(require("./logger/logger"));
 const dateScalar = new graphql_1.GraphQLScalarType({
     name: "Date",
@@ -94,11 +95,12 @@ exports.resolvers = {
                 return validationRes.message;
             try {
                 let error = yield create.createNewTypeDef({ options: options });
-                if (!error)
-                    error = yield create.createNewResolver({ options: options });
-                if (!error)
-                    return "OK";
-                return error;
+                if (error && error !== "OK")
+                    return error;
+                const resolverCreationRes = yield create.createNewResolver({
+                    options: options,
+                });
+                return resolverCreationRes;
             }
             catch ({ message }) {
                 logger_1.default.error(`FROM: EPB-server: ${message}`);
@@ -111,8 +113,10 @@ exports.resolvers = {
             if (validationRes.error)
                 return validationRes.message;
             try {
-                yield create.createNewInterface({ options: options });
-                return "OK";
+                const interfaceCreationRes = yield create.createNewInterface({
+                    options: options,
+                });
+                return interfaceCreationRes;
             }
             catch ({ message }) {
                 logger_1.default.error(`FROM: EPB-server: ${message}`);
@@ -125,13 +129,23 @@ exports.resolvers = {
             if (validationRes.error)
                 return `Creation of DB schema failed: ${validationRes.message}`;
             try {
-                yield create.createDbSchema({ options: options });
-                return "OK";
+                const schemaCreationRes = yield create.createDbSchema({
+                    options: options,
+                });
+                return schemaCreationRes;
             }
             catch ({ message }) {
                 logger_1.default.error(`FROM: EPB-server: ${message}`);
                 return message;
             }
+        }),
+        // Action: Add prebuilt action: User Auth
+        addUserAuth: (_, { options }) => __awaiter(void 0, void 0, void 0, function* () {
+            const res = yield add.addUserAuthToBackend({ options: options });
+            if (res)
+                return "OK";
+            //
+            // return String
         }),
         // mutation-end
     },

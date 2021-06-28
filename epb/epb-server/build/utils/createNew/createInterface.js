@@ -44,7 +44,7 @@ const insert_Into_Types_Index_TS = (exportStatement) => __awaiter(void 0, void 0
     try {
         const isOK = yield codeToString_1.checkIfOK(typeIndexPath);
         if (!isOK)
-            return "ERROR";
+            return "Error in insert_Into_Types_Index_TS - checkIfOK() returned 'undefined'";
         const typeIndexFile = yield read(typeIndexPath, "utf8");
         try {
             const assorted = typeIndexFile.split("\n");
@@ -59,12 +59,12 @@ const insert_Into_Types_Index_TS = (exportStatement) => __awaiter(void 0, void 0
         }
         catch ({ message }) {
             logger_1.default.error(message);
-            return "ERROR";
+            return message;
         }
     }
     catch ({ message }) {
         logger_1.default.error(message);
-        return "ERROR";
+        return message;
     }
 });
 exports.insert_Into_Types_Index_TS = insert_Into_Types_Index_TS;

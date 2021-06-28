@@ -78,7 +78,7 @@ const createNewTypeDef = ({ options }) => __awaiter(void 0, void 0, void 0, func
     const fullTypeDef = toTypeDef({ options: options });
     const typeDefs = yield codeToString_1.getTypeDefs(); // current typeDef file as string
     if (!typeDefs)
-        return "ERROR";
+        return "Error with utils/createNew/createTypeDef.ts, getTypeDefs() returned undefined!";
     const splatTypeDefs = typeDefs.split("\n").map((line) => line.trim());
     let indexToPush; // The index (line number) in which the next typeDef is meant to enter.
     options.type.toLowerCase() === "mutation" // mutation or query? different line number
