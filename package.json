@@ -1,6 +1,6 @@
 {
   "name": "@korenezri/easy-peasy-backend",
-  "version": "1.25.0",
+  "version": "1.26.0",
   "description": "An easy to use GQL backend generator",
   "main": "index.js",
   "scripts": {
