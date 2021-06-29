@@ -86,6 +86,7 @@ exports.resolvers = {
         getAllResolverNames: (_) => __awaiter(void 0, void 0, void 0, function* () {
             return yield codeToString_1.getResolverNames();
         }),
+        // query-end
     },
     Mutation: {
         // Action: create a new resolver (empty)

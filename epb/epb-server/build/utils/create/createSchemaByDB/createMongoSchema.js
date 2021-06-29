@@ -79,7 +79,7 @@ const toMongoSchema = (options) => {
 };
 const writeSchemaToFile = (name, schema) => __awaiter(void 0, void 0, void 0, function* () {
     const schemaFilepath = `./db/schemas/${name}Schema.ts`;
-    const doesSchemaFileExist = yield utils.checkIfFileAlreadyExists("./db/schemas", schemaFilepath);
+    const doesSchemaFileExist = yield utils.checkIfFileAlreadyExists("./db/schemas", `${name}Schema.ts`);
     if (!doesSchemaFileExist) {
         yield write(schemaFilepath, schema);
     }

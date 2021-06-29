@@ -53,6 +53,7 @@ const grabTypeDefsAndInsertNewTypeDef = (name, properties, type, returnType) => 
         return { error: "Duplicate type definitions detected, aborting.." };
     }
     else {
+        utils.addToCustomTypes(name.trim());
         allTypeDefinitions.push(`${name.trim()}Options`);
     }
     let finishedTypeDefs = insertTypeDefInterface(allTypeDefsAsString, name, typeDefInterface, type, returnType);
@@ -71,8 +72,9 @@ const fromOptionsToGQLTypeDefinition = (name, properties, returnType) => {
     if (returnType) {
         if (utils.isCustomType(returnType)) {
         }
-        else
+        else {
             returnType = utils.capitalizeFirstLetter(returnType);
+        }
     }
     let typeDef;
     if (!Array.isArray(varList)) {

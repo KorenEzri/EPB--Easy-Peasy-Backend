@@ -19,6 +19,7 @@ export const resolvers = {
       console.log("TEST PASSED!"); 
       return "OK!";
     },
+
     // query-end
   },
   Mutation: {
@@ -27,6 +28,7 @@ export const resolvers = {
       console.log("TEST PASSED!"); 
       return 'OK';
     },
+    
     // mutation-end
   }
 };

@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseTypeDefVarlist = exports.parseMongoVarlist = exports.parseResolverVarlist = exports.parseInterfaceVarlist = exports.parseArrayOperatorTypes = exports.isCustomType = void 0;
+exports.parseTypeDefVarlist = exports.parseMongoVarlist = exports.parseResolverVarlist = exports.parseInterfaceVarlist = exports.parseArrayOperatorTypes = exports.addToCustomTypes = exports.isCustomType = void 0;
 const consts_1 = require("../../consts");
 const utils = __importStar(require("."));
 // for graphQL types I add "Type" || "Input" accordingly to definition names,
@@ -31,11 +31,20 @@ const isCustomType = (type) => {
 };
 exports.isCustomType = isCustomType;
 // checks if the type is a custom type (IE an existing type that is not string, number, etc)
-const parseArrayOperatorTypes = (type) => {
+const addToCustomTypes = (type) => {
+    consts_1.allCustomTypesWithArrayTypes.push(type);
+    consts_1.allCustomTypesWithArrayTypes.push(`${type}[]`);
+    consts_1.allCustomTypesWithArrayTypes.push(`[${type}]`);
+    consts_1.allCustomTypesWithArrayTypes.push(`${type}Options`);
+    consts_1.allCustomTypesWithArrayTypes.push(`${type}Options[]`);
+    consts_1.allCustomTypesWithArrayTypes.push(`[${type}Options]`);
+};
+exports.addToCustomTypes = addToCustomTypes;
+const parseArrayOperatorTypes = (type, gqlArray) => {
     if (type.includes("[") && type.includes("]")) {
         let typeString = type.split("[").join("").split("]");
-        typeString = typeString + "[]";
-        typeString = typeString.split(",").join("");
+        typeString = gqlArray ? `[${typeString.join("")}]` : typeString + "[]";
+        typeString = gqlArray ? typeString : typeString.split(",").join("");
         return typeString;
     }
     else
@@ -163,8 +172,9 @@ const parseTypeDefVarlist = (vars, name) => {
         else {
             // if it's not, we want to capitalize it's first letter, as per GQL syntax.
             const capitalizedType = utils.capitalizeFirstLetter(type);
-            if (typeDefAsInterface)
-                typeDefAsInterface[name] = capitalizedType;
+            if (typeDefAsInterface) {
+                typeDefAsInterface[name] = exports.parseArrayOperatorTypes(capitalizedType, true);
+            }
             return `${name}:${capitalizedType}`;
         }
     });
