@@ -15,3 +15,4 @@ __exportStar(require("./stub"), exports);
 __exportStar(require("./createCustomTypeOptions"), exports);
 __exportStar(require("./createSchemaOptions"), exports);
 __exportStar(require("./addUserAuthOptions"), exports);
+__exportStar(require("./messageOptions"), exports);

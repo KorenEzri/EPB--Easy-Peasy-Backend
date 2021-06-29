@@ -86,7 +86,6 @@ exports.resolvers = {
         getAllResolverNames: (_) => __awaiter(void 0, void 0, void 0, function* () {
             return yield codeToString_1.getResolverNames();
         }),
-        // query-end
     },
     Mutation: {
         // Action: create a new resolver (empty)
@@ -120,9 +119,7 @@ exports.resolvers = {
                 const interfaceCreationRes = yield create.createNewInterface({
                     options: options,
                 });
-                setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
-                    yield utils.restartServer();
-                }), 1000);
+                yield utils.restartServer();
                 return interfaceCreationRes;
             }
             catch ({ message }) {

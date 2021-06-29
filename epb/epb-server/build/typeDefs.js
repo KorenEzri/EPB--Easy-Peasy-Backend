@@ -55,6 +55,7 @@ exports.typeDefs = gql `
     getTypeDefs: String
     getActions: [String]
     getAllResolverNames: [String]
+
     # query-end
   }
   type Mutation {

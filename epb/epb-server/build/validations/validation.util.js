@@ -39,7 +39,7 @@ const resolvers_1 = require("../resolvers");
 const schemas = __importStar(require("../db/schemas"));
 const joi_1 = __importDefault(require("joi"));
 const typeSchema = joi_1.default.object({
-    types: joi_1.default.array().items(joi_1.default.string()),
+    types: joi_1.default.array(),
 });
 const validateTypeList = (typeList) => {
     let allTypes = [];

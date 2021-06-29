@@ -32,7 +32,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createMongoDBSchema = void 0;
-const create_1 = require("../../create");
 const imports_1 = require("../../../consts/imports");
 const logger_1 = __importDefault(require("../../../logger/logger"));
 const utils = __importStar(require("../../utils"));
@@ -91,7 +90,7 @@ const writeSchemaToFile = (name, schema) => __awaiter(void 0, void 0, void 0, fu
 });
 const createMongoDBSchema = ({ options }) => __awaiter(void 0, void 0, void 0, function* () {
     logger_1.default.http("FROM: EPB-server: Creating a MongoDB schema...");
-    yield create_1.createNewInterface({ options: options });
+    // await createNewInterface({ options: options });
     const mongoDBSchema = toMongoSchema({ options: options });
     logger_1.default.http("FROM: EPB-server: Schema created, updating interface file to include a mongo document export...");
     yield updateInterfaceFile({ options: options });

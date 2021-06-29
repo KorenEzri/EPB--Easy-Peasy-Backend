@@ -69,9 +69,10 @@ const grabTypeDefsAndInsertNewTypeDef = (name, properties, type, returnType) => 
 const fromOptionsToGQLTypeDefinition = (name, properties, returnType) => {
     const { varList, typeDefInterface } = utils.parseTypeDefVarlist(properties, name);
     if (returnType) {
-        if (!utils.isCustomType(returnType)) {
-            returnType = utils.capitalizeFirstLetter(returnType);
+        if (utils.isCustomType(returnType)) {
         }
+        else
+            returnType = utils.capitalizeFirstLetter(returnType);
     }
     let typeDef;
     if (!Array.isArray(varList)) {
@@ -85,7 +86,13 @@ const fromOptionsToGQLTypeDefinition = (name, properties, returnType) => {
 };
 const insertTypeDefInterface = (typeDefs, name, typeDefInterface, type, returnType) => {
     let interfacePreFix;
-    type === "Query" ? (interfacePreFix = "type") : (interfacePreFix = "input");
+    type === "Query"
+        ? (interfacePreFix = "type")
+        : type === "type"
+            ? (interfacePreFix = type)
+            : type === "input"
+                ? (interfacePreFix = "input")
+                : (interfacePreFix = "type");
     if (returnType)
         interfacePreFix = "input";
     const handlerA = "# generated definitions";
