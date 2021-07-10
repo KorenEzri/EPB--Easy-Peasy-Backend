@@ -32,8 +32,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateUniqueSchemaName = exports.parseOptions = exports.validateUnique = exports.validateVars = void 0;
-const codeToString_1 = require("../utils/codeToString");
-const utils_1 = require("../utils/utils");
+const codeToString_1 = require("../createBackendFunctions/codeToString");
+const utils_1 = require("../createBackendFunctions/utils");
 const logger_1 = __importDefault(require("../logger/logger"));
 const resolvers_1 = require("../resolvers");
 const schemas = __importStar(require("../db/schemas"));
@@ -71,12 +71,12 @@ const validateUnique = (options) => __awaiter(void 0, void 0, void 0, function* 
         if (allResolverNames.includes(`${options.name}Options`))
             return {
                 error: true,
-                message: "duplicate definitions detected, aborting.",
+                message: `duplicate definitions detected, aborting. Duplicate name: ${options.name}Options`,
             };
         if (allResolverNames.includes(`${options.name}`))
             return {
                 error: true,
-                message: "duplicate definitions detected, aborting.",
+                message: `duplicate definitions detected, aborting. Duplicate name: ${options.name}`,
             };
     }
     if (allTypeDefs) {
@@ -113,7 +113,13 @@ const parseOptions = (options) => {
         const varType = splat[1];
         return { var: varName, type: varType };
     });
-    validateOpts.properties = varList.map((property) => property.type.trim());
+    try {
+        validateOpts.properties = varList.map((property) => property.type.trim());
+    }
+    catch ({ message }) {
+        logger_1.default.error(`Error at validation.util.ts, at parseOptions() ~line 97: `, message);
+        return message;
+    }
     const error = validateTypeList(validateOpts.properties);
     if (error)
         return error;

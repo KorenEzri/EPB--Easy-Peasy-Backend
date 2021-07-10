@@ -1,1 +1,0 @@
-(this.webpackJsonpclient=this.webpackJsonpclient||[]).push([[26],{561:function(n,t,e){"use strict";e.r(t),e.d(t,"AddCrudForm",(function(){return i}));var r=e(0),u=e(45),c=Object(u.a)((function(){return e.e(20).then(e.bind(null,545))}),(function(n){return n.AddCrudOptions}));function i(n){return r.createElement("div",null,r.createElement(c,null))}}}]);

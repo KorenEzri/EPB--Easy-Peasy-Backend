@@ -47,9 +47,8 @@ const validateTypeCreation = (options) => __awaiter(void 0, void 0, void 0, func
     const varsValid = validation_util_1.validateVars(options);
     if (varsValid)
         return varsValid;
-    const uniqueValid = yield validation_util_1.validateUnique(options);
-    if (uniqueValid)
-        return uniqueValid;
+    // const uniqueValid = await validateUnique(options);
+    // if (uniqueValid) return uniqueValid;
     const parsedOptions = validation_util_1.parseOptions(options);
     const { error, value } = exports.typeSchema.validate(parsedOptions);
     if (error) {

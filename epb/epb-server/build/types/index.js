@@ -15,3 +15,8 @@ __exportStar(require("./stub"), exports);
 __exportStar(require("./createCustomTypeOptions"), exports);
 __exportStar(require("./createSchemaOptions"), exports);
 __exportStar(require("./addUserAuthOptions"), exports);
+__exportStar(require("./createCRUDResolverOptions"), exports);
+__exportStar(require("./addCrudOperationsOptions"), exports);
+__exportStar(require("./createCRUDTypedefOptions"), exports);
+__exportStar(require("./createTypedefOptions"), exports);
+__exportStar(require("./movieOptions"), exports);

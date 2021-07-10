@@ -8,6 +8,27 @@ exports.typeDefs = gql `
 
   # generated definitions
 
+  input movieOptionsInput {
+    actors: [String]
+    duration: Int
+    name: String
+    views: Int
+  }
+
+  type movieOptionsType {
+    actors: [String]
+    duration: Int
+    name: String
+    views: Int
+  }
+
+  input addCrudOperationsOptionsInput {
+    schemaName: String
+    crudActions: [String]
+    identifier: identifier
+  }
+  # added at: Thu Jul 01 2021 16:50:14 GMT+0300 (Israel Daylight Time)
+
   input addUserAuthOptions {
     publicUserInputs: [String]
     authUserInputs: [String]
@@ -50,14 +71,21 @@ exports.typeDefs = gql `
     properties: [String]
     description: String
   }
+  input identifier {
+    name: String
+    type: String
+  }
   type Query {
     getResolvers: String
     getTypeDefs: String
     getActions: [String]
     getAllResolverNames: [String]
-
-    getMessages: [messageOptions]
-
+    getAllowedTypes: [String]
+    getAllDBSchemaNames: [String]
+    getAllSchemaProps(schemaName: String): [String]
+    readOneMovie(name: String): movieOptionsType
+    readAllMovies: [movieOptionsType]
+    readManyMovies(name: String): [movieOptionsType]
     # query-end
   }
   type Mutation {
@@ -65,6 +93,13 @@ exports.typeDefs = gql `
     createCustomType(options: createCustomTypeOptions): String
     createSchema(options: createSchemaOptions): String
     addUserAuth(options: addUserAuthOptions): String
+    restartServer(timeout: Int): String
+    addCrudOperations(options: addCrudOperationsOptionsInput): String
+    createOneMovie(options: movieOptionsInput): String
+    deleteOneMovie(name: String): String
+    updateManyMovies(options: movieOptionsInput): String
+    updateOneMovie(options: movieOptionsInput): String
     # mutation-end
   }
 `;
+// # readOneMessage(:): MessageOptionsType

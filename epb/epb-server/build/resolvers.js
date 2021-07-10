@@ -33,30 +33,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolvers = void 0;
 const graphql_1 = require("graphql");
-// TODO:
-// CHECK BEST PRACTICE FOR WHERE TO STORE RESOLVER.TS AND TYPEDEF.TS
-//  creating typeDef bugs: 1. typedef structure is nameOptions: { options: {}, kaki:string, ... }
-// TODO:
-//  - add prebuilt actions: {
-//    - user auth - four days {
-// -  TODO:
-// -        - add option - i forgot what it was.. OH! add custom types to be available as return or receive types when creating interfaces
-// -        - add auto export of schemas from index.ts of db schema folder.
-// }
-//    - CRUD operations for DB schema - four days
-//    - Scalar type creator!! Then, add suppport for || in typedef creation as well.
-// {
-//////////// DUE: 01.07.21, Sunday. //////////////////
-// TODO:
-//  - code cleanup and tests
-//  - add documentation, create a presentation
-//////////// DUE: 05.07.21, Sunday. //////////////////
+/*
+TODO:
+CRUD
+IN TYPEDEFS:
+BUG:
+// readAllMessages - does not require params, so remove them.
+// return types of Queries are capslocked, but they're actually custom types which needn't be capslocked.
+
+- Add "Select all" button when choosing CRUD actions
+DUE: 4.07.21, Saturday night.
+
+CHAT APP PRESENTATION
+- Make a 100% working chatapp presentation
+- CHECK BEST PRACTICE FOR WHERE TO STORE RESOLVER.TS AND TYPEDEF.TS
+DUE: 8.07.21, Thursday morning.
+
+PRESENTATION
+- Make a presentation to depict the project
+- Add documentation to your Github repo.
+DUE: 9.07.21, Friday night.
+
+AUTH
+- Add complete user auth system with the click of a button - will include:
+- public user schema
+- auth user schema
+four GQLtypes - input and type for user, input and type for auth
+CRUD operations for both schemas:
+- create - with hashing of passwords and saving them in a DB
+- delete - to delete
+- read - to get the user
+- login - to log in with password.
+- cookies on backend.
+DUE: 12.07.21, Monday morning.
+
+//  - add more options to the CLI - make it customizable
+//  - make sure creating only a DB schema works
+*/
+//////////// DUE: 13.07.21, Sunday. //////////////////
 const validations_1 = require("./validations");
 // option types end
-const codeToString_1 = require("./utils/codeToString");
-const utils = __importStar(require("./utils/utils"));
-const create = __importStar(require("./utils/create"));
-const add = __importStar(require("./utils/prebuiltActions"));
+// model imports
+const schemas_1 = require("./db/schemas");
+// model imports end
+const codeToString_1 = require("./createBackendFunctions/codeToString");
+const utils = __importStar(require("./createBackendFunctions/utils"));
+const create = __importStar(require("./createBackendFunctions/create"));
+const add = __importStar(require("./createBackendFunctions/prebuiltActions"));
 const logger_1 = __importDefault(require("./logger/logger"));
 const dateScalar = new graphql_1.GraphQLScalarType({
     name: "Date",
@@ -86,6 +109,51 @@ exports.resolvers = {
         getAllResolverNames: (_) => __awaiter(void 0, void 0, void 0, function* () {
             return yield codeToString_1.getResolverNames();
         }),
+        // Action: get a list of all allowed input and return types
+        getAllowedTypes: (_) => __awaiter(void 0, void 0, void 0, function* () {
+            return utils.getAllAllowedTypes();
+        }),
+        // Action: get a list of all database schemas.
+        getAllDBSchemaNames: (_) => __awaiter(void 0, void 0, void 0, function* () {
+            // await add.createDBSchemaConfigList("messageSchema");
+            return yield utils.getAllSchemaNames();
+            // return [String]
+        }),
+        // Action: get all the properties of a schema, provided it's name.
+        getAllSchemaProps: (_, { schemaName }) => __awaiter(void 0, void 0, void 0, function* () {
+            return yield utils.getAllSchemaProps(schemaName);
+            // return [String]
+        }),
+        readOneMovie: (_, name) => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                const movieInstance = yield schemas_1.MovieModel.findOne({ name: name });
+                return movieInstance;
+            }
+            catch ({ message }) {
+                logger_1.default ? logger_1.default.error(message) : console.log(message);
+                return message;
+            }
+        }),
+        readAllMovies: () => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                const movieInstances = yield schemas_1.MovieModel.find();
+                return movieInstances;
+            }
+            catch ({ message }) {
+                logger_1.default ? logger_1.default.error(message) : console.log(message);
+                return message;
+            }
+        }),
+        readManyMovies: (_, name) => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                const movieInstances = yield schemas_1.MovieModel.find({ name: name });
+                return movieInstances;
+            }
+            catch ({ message }) {
+                logger_1.default ? logger_1.default.error(message) : console.log(message);
+                return message;
+            }
+        }),
         // query-end
     },
     Mutation: {
@@ -101,9 +169,6 @@ exports.resolvers = {
                 const resolverCreationRes = yield create.createNewResolver({
                     options: options,
                 });
-                setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
-                    yield utils.restartServer();
-                }), 1000);
                 return resolverCreationRes;
             }
             catch ({ message }) {
@@ -120,7 +185,6 @@ exports.resolvers = {
                 const interfaceCreationRes = yield create.createNewInterface({
                     options: options,
                 });
-                yield utils.restartServer();
                 return interfaceCreationRes;
             }
             catch ({ message }) {
@@ -137,9 +201,6 @@ exports.resolvers = {
                 const schemaCreationRes = yield create.createDbSchema({
                     options: options,
                 });
-                setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
-                    yield utils.restartServer();
-                }), 1000);
                 return schemaCreationRes;
             }
             catch ({ message }) {
@@ -154,6 +215,65 @@ exports.resolvers = {
                 return "OK";
             //
             // return String
+        }),
+        // Action: Restart the server
+        restartServer: (_, timeout) => __awaiter(void 0, void 0, void 0, function* () {
+            logger_1.default.info(`FROM: EPB-server: Restarting server in ${timeout} miliseconds.`);
+            setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+                yield utils.restartServer();
+            }), timeout);
+        }),
+        // Action: add prebuilt action: Crud Operations
+        addCrudOperations: (_, { options }) => __awaiter(void 0, void 0, void 0, function* () {
+            const { schemaName, crudActions, identifier } = options;
+            try {
+                const res = yield add.addCrudToDBSchemas(schemaName, crudActions, identifier);
+                if (Array.isArray(res)) {
+                    res.forEach((error) => {
+                        logger_1.default.error(`FROM: EPB-server: ${error.message}`);
+                    });
+                    return `${res.length} out of ${crudActions.length} CRUD operations could not be created for DB schema ${schemaName}!`;
+                }
+                else if (!res.error) {
+                    return `${crudActions.length} crud operation(s) created successfully.`;
+                }
+                else {
+                    return `${res.message}`;
+                }
+            }
+            catch ({ message }) {
+                logger_1.default.error(message);
+                return message;
+            }
+        }),
+        createOneMovie: (_, movie) => __awaiter(void 0, void 0, void 0, function* () {
+            const movieInstance = new schemas_1.MovieModel({ movie });
+            try {
+                yield movieInstance.save();
+            }
+            catch ({ message }) {
+                logger_1.default ? logger_1.default.error(message) : console.log(message);
+                return message;
+            }
+        }),
+        deleteOneMovie: (_, name) => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield schemas_1.MovieModel.deleteOne({ name: name });
+                return "OK";
+            }
+            catch ({ message }) {
+                logger_1.default ? logger_1.default.error(message) : console.log(message);
+                return message;
+            }
+        }),
+        updateOneMovie: (_, name, movie) => __awaiter(void 0, void 0, void 0, function* () {
+            try {
+                yield schemas_1.MovieModel.updateOne({ name: name }, movie);
+            }
+            catch ({ message }) {
+                logger_1.default ? logger_1.default.error(message) : console.log(message);
+                return message;
+            }
         }),
         // mutation-end
     },
