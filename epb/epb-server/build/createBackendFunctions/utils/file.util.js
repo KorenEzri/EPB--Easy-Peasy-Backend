@@ -102,8 +102,11 @@ const addToAllowedTypes = (name) => {
 };
 exports.addToAllowedTypes = addToAllowedTypes;
 const restartServer = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield write('node_modules/@korenezri/easy-peasy-backend/epb/client/build" "nodemon index.ts" "nodemon node_modules/@korenezri/easy-peasy-backend/epb/epb-server/build/restart.py', `{"restart":"${Math.random()}"}`);
-    // await write("restart.py", `{"restart":"${Math.random()}"}`);
+    // await write(
+    //   'node_modules/@korenezri/easy-peasy-backend/epb/client/build" "nodemon index.ts" "nodemon node_modules/@korenezri/easy-peasy-backend/epb/epb-server/build/restart.py',
+    //   `{"restart":"${Math.random()}"}`
+    // );
+    yield write("restart.py", `{"restart":"${Math.random()}"}`);
 });
 exports.restartServer = restartServer;
 const getAllSchemaNames = () => __awaiter(void 0, void 0, void 0, function* () {

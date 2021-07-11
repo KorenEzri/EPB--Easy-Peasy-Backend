@@ -124,6 +124,9 @@ const getTypeDefActionVariables = (properties, names, identifier) => {
                     typeDefActionVars = `(options: ${typeDefInterfaceName})`;
                 }
             }
+            else {
+                typeDefActionVars = `(options: ${typeDefInterfaceName})`;
+            }
         }
     }
     else if (Array.isArray(properties)) {
@@ -251,10 +254,11 @@ const createTypedefClientOptionsFromFileOptions = (options) => __awaiter(void 0,
     let propertiesForTypeInterface;
     if (requiresIdentifier && !isUpdateQuery) {
         propertiesForOptions = `${identifier.name}: ${identifier.type}`;
-        if (lowerCaseAction.includes("read") &&
-            !utils.checkIfConfigItemExists("typeDefInterfaces", `${modelNameOnly}OptionsType`)) {
-            propertiesForTypeInterface = typeDefInterface.properties;
-        }
+    }
+    //BUG: potential bug here.
+    if (lowerCaseAction.includes("read") &&
+        !(yield utils.checkIfConfigItemExists("typeDefInterfaces", `${modelNameOnly}OptionsType`))) {
+        propertiesForTypeInterface = typeDefInterface.properties;
     }
     const createCustomTypeOptions = {
         properties: propertiesForOptions,
