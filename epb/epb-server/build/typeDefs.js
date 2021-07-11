@@ -8,20 +8,6 @@ exports.typeDefs = gql `
 
   # generated definitions
 
-  input movieOptionsInput {
-    actors: [String]
-    duration: Int
-    name: String
-    views: Int
-  }
-
-  type movieOptionsType {
-    actors: [String]
-    duration: Int
-    name: String
-    views: Int
-  }
-
   input addCrudOperationsOptionsInput {
     schemaName: String
     crudActions: [String]
@@ -83,9 +69,6 @@ exports.typeDefs = gql `
     getAllowedTypes: [String]
     getAllDBSchemaNames: [String]
     getAllSchemaProps(schemaName: String): [String]
-    readOneMovie(name: String): movieOptionsType
-    readAllMovies: [movieOptionsType]
-    readManyMovies(name: String): [movieOptionsType]
     # query-end
   }
   type Mutation {
@@ -95,10 +78,6 @@ exports.typeDefs = gql `
     addUserAuth(options: addUserAuthOptions): String
     restartServer(timeout: Int): String
     addCrudOperations(options: addCrudOperationsOptionsInput): String
-    createOneMovie(options: movieOptionsInput): String
-    deleteOneMovie(name: String): String
-    updateManyMovies(options: movieOptionsInput): String
-    updateOneMovie(options: movieOptionsInput): String
     # mutation-end
   }
 `;

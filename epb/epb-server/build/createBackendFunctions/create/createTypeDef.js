@@ -180,18 +180,6 @@ const insertTypeDefInterface = (typeDefs, name, typeDefInterface, type, returnTy
     return finishedTypeDefs;
 });
 const createNewTypeDef = ({ options, }) => __awaiter(void 0, void 0, void 0, function* () {
-    /*
-    FLOW:
-  1. grabTypeDefsAndInsertNewTypeDef() => fromOptionsToGQLTypeDefinition(),
-  2. fromOptionsToGQLTypeDefinition() => utils.parseTypeDefVarlist()
-     utils.parseTypeDefVarlist() // Returns varList: {name:string, type:string} to fromOptionstoGQLTypeDefinition() (2)
-     fromOptionsToGQLTypeDefinition() // Returns '{typeDef, typeDefInterface}' to grabTypeDefsAndInsertNewTypeDef() (1)
-  3. grabTypeDefsAndInsertNewTypeDef() => insertTypeDefInterface()
-     insertTypeDefInterface() // Returns 'finishedTypeDefs' to grabTypeDefsAndInsertNewTypeDef() (1)
-     grabTypeDefsAndInsertNewTypeDef() // Returns 'finishedTypeDefs'
-     write to file: finishedTypeDefs
-     .. end ..
-  */
     logger_1.default.http("FROM: EPB-server: Creating a new type definition...");
     try {
         const res = yield grabTypeDefsAndInsertNewTypeDef(options.name, options.properties, options.type, options.returnType, options.actionName);

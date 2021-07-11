@@ -1,7 +1,15 @@
 import { GraphQLScalarType } from "graphql";
+import Logger from "./logger/logger";
+// generated imports
+
+//
+
 // option types
 import {stubA, stub} from "./types"
 // option types end
+// model imports
+import { modelstub} from "./db/schemas";
+// model imports end
 const dateScalar = new GraphQLScalarType({
   name: "Date",
   parseValue(value: string | number | Date) {

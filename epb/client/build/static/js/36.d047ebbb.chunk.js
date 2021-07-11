@@ -1,0 +1,1 @@
+(this.webpackJsonpclient=this.webpackJsonpclient||[]).push([[36],{540:function(n,t,e){"use strict";e.r(t),e.d(t,"Delete",(function(){return o}));var i=e(71),c=e(0);function o(n){return c.createElement(r,null,"DELETE")}var r=i.b.div.withConfig({componentId:"n6ygno-0"})([""])}}]);

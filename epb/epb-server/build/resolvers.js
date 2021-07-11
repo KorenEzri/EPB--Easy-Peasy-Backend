@@ -33,48 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolvers = void 0;
 const graphql_1 = require("graphql");
-/*
-TODO:
-CRUD
-IN TYPEDEFS:
-BUG:
-// readAllMessages - does not require params, so remove them.
-// return types of Queries are capslocked, but they're actually custom types which needn't be capslocked.
-
-- Add "Select all" button when choosing CRUD actions
-DUE: 4.07.21, Saturday night.
-
-CHAT APP PRESENTATION
-- Make a 100% working chatapp presentation
-- CHECK BEST PRACTICE FOR WHERE TO STORE RESOLVER.TS AND TYPEDEF.TS
-DUE: 8.07.21, Thursday morning.
-
-PRESENTATION
-- Make a presentation to depict the project
-- Add documentation to your Github repo.
-DUE: 9.07.21, Friday night.
-
-AUTH
-- Add complete user auth system with the click of a button - will include:
-- public user schema
-- auth user schema
-four GQLtypes - input and type for user, input and type for auth
-CRUD operations for both schemas:
-- create - with hashing of passwords and saving them in a DB
-- delete - to delete
-- read - to get the user
-- login - to log in with password.
-- cookies on backend.
-DUE: 12.07.21, Monday morning.
-
-//  - add more options to the CLI - make it customizable
-//  - make sure creating only a DB schema works
-*/
-//////////// DUE: 13.07.21, Sunday. //////////////////
 const validations_1 = require("./validations");
-// option types end
-// model imports
-const schemas_1 = require("./db/schemas");
 // model imports end
 const codeToString_1 = require("./createBackendFunctions/codeToString");
 const utils = __importStar(require("./createBackendFunctions/utils"));
@@ -123,36 +82,6 @@ exports.resolvers = {
         getAllSchemaProps: (_, { schemaName }) => __awaiter(void 0, void 0, void 0, function* () {
             return yield utils.getAllSchemaProps(schemaName);
             // return [String]
-        }),
-        readOneMovie: (_, name) => __awaiter(void 0, void 0, void 0, function* () {
-            try {
-                const movieInstance = yield schemas_1.MovieModel.findOne({ name: name });
-                return movieInstance;
-            }
-            catch ({ message }) {
-                logger_1.default ? logger_1.default.error(message) : console.log(message);
-                return message;
-            }
-        }),
-        readAllMovies: () => __awaiter(void 0, void 0, void 0, function* () {
-            try {
-                const movieInstances = yield schemas_1.MovieModel.find();
-                return movieInstances;
-            }
-            catch ({ message }) {
-                logger_1.default ? logger_1.default.error(message) : console.log(message);
-                return message;
-            }
-        }),
-        readManyMovies: (_, name) => __awaiter(void 0, void 0, void 0, function* () {
-            try {
-                const movieInstances = yield schemas_1.MovieModel.find({ name: name });
-                return movieInstances;
-            }
-            catch ({ message }) {
-                logger_1.default ? logger_1.default.error(message) : console.log(message);
-                return message;
-            }
         }),
         // query-end
     },
@@ -217,8 +146,8 @@ exports.resolvers = {
             // return String
         }),
         // Action: Restart the server
-        restartServer: (_, timeout) => __awaiter(void 0, void 0, void 0, function* () {
-            logger_1.default.info(`FROM: EPB-server: Restarting server in ${timeout} miliseconds.`);
+        restartServer: (_, { timeout }) => __awaiter(void 0, void 0, void 0, function* () {
+            logger_1.default.info(`FROM: EPB-server: Restarting server in ${timeout} miliseconds..`);
             setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
                 yield utils.restartServer();
             }), timeout);
@@ -243,35 +172,6 @@ exports.resolvers = {
             }
             catch ({ message }) {
                 logger_1.default.error(message);
-                return message;
-            }
-        }),
-        createOneMovie: (_, movie) => __awaiter(void 0, void 0, void 0, function* () {
-            const movieInstance = new schemas_1.MovieModel({ movie });
-            try {
-                yield movieInstance.save();
-            }
-            catch ({ message }) {
-                logger_1.default ? logger_1.default.error(message) : console.log(message);
-                return message;
-            }
-        }),
-        deleteOneMovie: (_, name) => __awaiter(void 0, void 0, void 0, function* () {
-            try {
-                yield schemas_1.MovieModel.deleteOne({ name: name });
-                return "OK";
-            }
-            catch ({ message }) {
-                logger_1.default ? logger_1.default.error(message) : console.log(message);
-                return message;
-            }
-        }),
-        updateOneMovie: (_, name, movie) => __awaiter(void 0, void 0, void 0, function* () {
-            try {
-                yield schemas_1.MovieModel.updateOne({ name: name }, movie);
-            }
-            catch ({ message }) {
-                logger_1.default ? logger_1.default.error(message) : console.log(message);
                 return message;
             }
         }),

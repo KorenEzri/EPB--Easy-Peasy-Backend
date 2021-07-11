@@ -19,4 +19,3 @@ __exportStar(require("./createCRUDResolverOptions"), exports);
 __exportStar(require("./addCrudOperationsOptions"), exports);
 __exportStar(require("./createCRUDTypedefOptions"), exports);
 __exportStar(require("./createTypedefOptions"), exports);
-__exportStar(require("./movieOptions"), exports);

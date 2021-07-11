@@ -91,40 +91,41 @@ const getMongooseMethod = (action, identifier, resolverVariable) => {
 };
 exports.getMongooseMethod = getMongooseMethod;
 exports.resolverTitles = {
-    createOne: (parts) => `${parts.resolverName}: async (_: any, ${parts.modelFunctionVarName}: ${parts.modelInterfaceName}) => {`,
-    createMany: (parts) => `${parts.resolverName}s: async (_: any, ${parts.modelFunctionVarName}s: ${parts.modelInterfaceName}[]) => {`,
+    createOne: (parts) => `// Action: Create one ${parts.modelInterfaceName} Instance \n ${parts.resolverName}: async (_: any, { options }: { options: ${parts.modelInterfaceName} } ) => {`,
+    createMany: (parts) => `// Action: Create many ${parts.modelInterfaceName} Instances \n ${parts.resolverName}s: async (_: any, { options }: { options: ${parts.modelInterfaceName}[] }) => {`,
     readOne: (parts) => {
-        var _a, _b;
-        return `${parts.resolverName}: async (_:any, ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name}: ${utils.lowercaseFirstLetter(((_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.type) || "")}) => {`;
+        var _a, _b, _c;
+        return `\n// Action: Read one ${parts.modelInterfaceName} Instance, based on an identifying property. \n\n ${parts.resolverName}: async (_:any, { ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name} }: { ${(_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.name} :${utils.lowercaseFirstLetter(((_c = parts.identifier) === null || _c === void 0 ? void 0 : _c.type) || "")} }) => {`;
     },
     readMany: (parts) => {
-        var _a, _b;
-        return `${parts.resolverName}s: async (_: any, ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name}: ${utils.lowercaseFirstLetter(((_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.type) || "")}) => {`;
+        var _a, _b, _c;
+        return `\n// Action: Read many ${parts.modelInterfaceName} Instances, based on an identifying property. \n\n ${parts.resolverName}s: async (_: any, { ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name} }: { ${(_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.name} :${utils.lowercaseFirstLetter(((_c = parts.identifier) === null || _c === void 0 ? void 0 : _c.type) || "")} }) => {`;
     },
-    readAll: (parts) => `${parts.resolverName}s: async () => {`,
+    readAll: (parts) => `\n// Action: Read all ${parts.modelInterfaceName} Instances \n\n ${parts.resolverName}s: async () => {`,
     updateOne: (parts) => {
-        var _a, _b;
-        return `${parts.resolverName}: async (_:any, ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name}:${utils.lowercaseFirstLetter(((_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.type) || "")}, ${parts.modelFunctionVarName}: ${parts.modelInterfaceName}) => {`;
+        var _a, _b, _c;
+        return `// Action: Update one ${parts.modelInterfaceName} Instance, based on an identifying property \n ${parts.resolverName}: async (_:any, { ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name} }: { ${(_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.name} :${utils.lowercaseFirstLetter(((_c = parts.identifier) === null || _c === void 0 ? void 0 : _c.type) || "")} }, { options }: { options: ${parts.modelInterfaceName} } ) => {`;
     },
     deleteOne: (parts) => {
-        var _a, _b;
-        return `${parts.resolverName}: async (_:any, ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name}: ${utils.lowercaseFirstLetter(((_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.type) || "")}) => {`;
+        var _a, _b, _c;
+        return `// Action: Delete one ${parts.modelInterfaceName} Instance, based on an identifying property \n ${parts.resolverName}: async (_:any, { ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name} }: { ${(_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.name} :${utils.lowercaseFirstLetter(((_c = parts.identifier) === null || _c === void 0 ? void 0 : _c.type) || "")} }) => {`;
     },
     deleteMany: (parts) => {
-        var _a, _b;
-        return `${parts.resolverName}s: async (_: any, ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name}: ${utils.lowercaseFirstLetter(((_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.type) || "")}) => {`;
+        var _a, _b, _c;
+        return `// Action: Delete many ${parts.modelInterfaceName} Instances, based on an identifying property \n ${parts.resolverName}s: async (_: any, { ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name} }: { ${(_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.name} :${utils.lowercaseFirstLetter(((_c = parts.identifier) === null || _c === void 0 ? void 0 : _c.type) || "")} }) => {`;
     },
 };
 exports.resolverTryCatchBlocks = {
     createOne: (parts) => `\n try {
         await ${parts.modelInstaceName}.${parts.mongooseMethod}
+        return "OK"
       }
         catch ({ message }) {
             Logger ? Logger.error(message) : console.log(message)
             return message
       }`,
     createMany: (parts) => `\n try {
-        await ${parts.mongoDBModelObjectName}.insertMany(${parts.modelFunctionVarName}s);
+        await ${parts.mongoDBModelObjectName}.insertMany(options);
         return 'OK'
     }
     catch ({ message }) {
@@ -170,8 +171,9 @@ exports.resolverTryCatchBlocks = {
         return `
       \n try {
           await ${parts.mongoDBModelObjectName}.updateOne(
-              {${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name}: ${(_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.name}}, ${parts.modelFunctionVarName}
+              {${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name}: ${(_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.name}}, options
           )
+          return "OK";
       }
       catch ({ message }) {
         Logger ? Logger.error(message) : console.log(message)
@@ -207,7 +209,7 @@ exports.resolverTryCatchBlocks = {
     },
 };
 exports.resolverBodies = {
-    createOne: (parts) => ` const ${parts.modelInstaceName} = new ${parts.mongoDBModelObjectName} ({${parts.modelFunctionVarName}}) ${parts.resolverTryCatchBlock}`,
+    createOne: (parts) => ` const ${parts.modelInstaceName} = new ${parts.mongoDBModelObjectName} ( options ) ${parts.resolverTryCatchBlock}`,
     createMany: (parts) => `${parts.resolverTryCatchBlock}`,
     readOne: (parts) => `${parts.resolverTryCatchBlock}`,
     readMany: (parts) => `${parts.resolverTryCatchBlock}`,

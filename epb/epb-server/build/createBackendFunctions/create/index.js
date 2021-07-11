@@ -14,5 +14,4 @@ __exportStar(require("./createInterface"), exports);
 __exportStar(require("./createResolver"), exports);
 __exportStar(require("./createTypeDef"), exports);
 __exportStar(require("./createSchema"), exports);
-__exportStar(require("../prebuiltActions/crudOperations/mongodb/createCRUDTypedefs"), exports);
-__exportStar(require("../prebuiltActions/crudOperations/mongodb/testNewTypedefCreation"), exports);
+__exportStar(require("../prebuiltActions/crudOperations/mongodb/createCRUDTypedef"), exports);

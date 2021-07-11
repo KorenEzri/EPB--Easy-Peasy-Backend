@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"serve -s node_modules/@korenezri/easy-peasy-backend/epb/client/build\" \"ts-node index.ts\" \"node node_modules/@korenezri/easy-peasy-backend/epb/epb-server/build/index.js\"",
+    "dev": "concurrently \"serve -s node_modules/@korenezri/easy-peasy-backend/epb/client/build\" \"nodemon -e py index.ts\" \"node node_modules/@korenezri/easy-peasy-backend/epb/epb-server/build/index.js\"",
     "build": "tsc --project ./"
   },
   "keywords": [],
@@ -25,7 +25,9 @@
   },
   "devDependencies": {
     "@korenezri/easy-peasy-backend": "^1.8.0",
+    "@types/mongoose-unique-validator": "^1.0.5",
     "prettier": "^2.3.1",
+    "serve": "11.3.2",
     "concurrently": "^6.2.0",
     "typescript": "^4.3.2",
     "supertest": "^6.1.3",
@@ -43,7 +45,8 @@
   },
   "nodemonConfig": {
     "ignore": [
-      ".ts"
+      "*.ts",
+      "*.json"
     ]
   }
 }

@@ -40,7 +40,7 @@ const fs_1 = __importDefault(require("fs"));
 const util_2 = require("util");
 const utils = __importStar(require("../../utils"));
 const logger_1 = __importDefault(require("../../../logger/logger"));
-const testNewTypedefCreation_1 = require("./mongodb/testNewTypedefCreation");
+const createCRUDTypedef_1 = require("./mongodb/createCRUDTypedef");
 const write = util_2.promisify(fs_1.default.writeFile);
 const read = util_2.promisify(fs_1.default.readFile);
 const createDBSchemaConfigList = (schemaName) => __awaiter(void 0, void 0, void 0, function* () {
@@ -126,7 +126,6 @@ const insertOptionsInterfaceImportToResolverFile = (optionsName) => __awaiter(vo
 //
 const createCrudOps = (schemaName, crudOps, identifier) => __awaiter(void 0, void 0, void 0, function* () {
     crudOps = crudOps.map((op) => op.split(" ").join(""));
-    const modelNameOnly = schemaName.replace("Schema", "");
     for (let i = 0; i < crudOps.length; i++) {
         const crudOperation = crudOps[i];
         const resolverType = util_1.mutationCRUDS.includes(crudOperation)
@@ -145,7 +144,7 @@ const createCrudOps = (schemaName, crudOps, identifier) => __awaiter(void 0, voi
             resolverType,
             identifier,
         };
-        yield testNewTypedefCreation_1.createTypedef(typeDefOptions);
+        yield createCRUDTypedef_1.createTypedef(typeDefOptions);
         logger_1.default.http(`FROM: EPB-server: created CRUD action ${crudOperation}, applying Prettier..`);
         yield utils.applyPrettier();
     }

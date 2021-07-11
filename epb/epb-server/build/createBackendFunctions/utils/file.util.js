@@ -102,11 +102,8 @@ const addToAllowedTypes = (name) => {
 };
 exports.addToAllowedTypes = addToAllowedTypes;
 const restartServer = () => __awaiter(void 0, void 0, void 0, function* () {
-    // await write(
-    //   'node_modules/@korenezri/easy-peasy-backend/epb/client/build" "nodemon index.ts" "nodemon node_modules/@korenezri/easy-peasy-backend/epb/epb-server/build/restart.json',
-    //   `{"restart":"${Math.random()}"}`
-    // );
-    yield write("restart.json", `{"restart":"${Math.random()}"}`);
+    yield write('node_modules/@korenezri/easy-peasy-backend/epb/client/build" "nodemon index.ts" "nodemon node_modules/@korenezri/easy-peasy-backend/epb/epb-server/build/restart.py', `{"restart":"${Math.random()}"}`);
+    // await write("restart.py", `{"restart":"${Math.random()}"}`);
 });
 exports.restartServer = restartServer;
 const getAllSchemaNames = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -166,6 +163,7 @@ const insertImportStatement = (resolvers, name) => {
 };
 exports.insertImportStatement = insertImportStatement;
 const insertStringToFileInRangeOfLines = (filePath, string, startHandler, endHandler, duplicates, addToStartIndex, addString) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     addToStartIndex = addToStartIndex ? addToStartIndex : 0;
     const fileAsString = yield read(filePath, "utf8");
     const lineArray = yield utils
@@ -182,7 +180,7 @@ const insertStringToFileInRangeOfLines = (filePath, string, startHandler, endHan
         }
     })
         .filter((v) => v != null);
-    if (linesInRange.includes(string) || linesInRange[0].includes(string)) {
+    if ((linesInRange === null || linesInRange === void 0 ? void 0 : linesInRange.includes(string)) || ((_a = linesInRange[0]) === null || _a === void 0 ? void 0 : _a.includes(string))) {
         if (!duplicates)
             return lineArray.join("\n");
     }
@@ -266,11 +264,11 @@ const alterConfigFile = (action, contentHeader, content, type) => __awaiter(void
         if (!content)
             return;
         if (Array.isArray(content)) {
-            const index = content.indexOf(toRemove);
-            return content.splice(index, 1);
+            const index = content === null || content === void 0 ? void 0 : content.indexOf(toRemove);
+            return content === null || content === void 0 ? void 0 : content.splice(index, 1);
         }
         else
-            return content.split(`${toRemove}`).join("");
+            return content === null || content === void 0 ? void 0 : content.split(`${toRemove}`).join("");
     };
     const filePath = "epb.config.json";
     const jsonFileAsJSON = JSON.parse(yield read(filePath, "utf8"));
@@ -285,21 +283,9 @@ const checkIfConfigItemExists = (contentHeader, item) => __awaiter(void 0, void 
     const filePath = "epb.config.json";
     const jsonFileAsJSON = JSON.parse(yield read(filePath, "utf8"));
     const configFileContent = jsonFileAsJSON[contentHeader];
-    return configFileContent.includes(item);
+    return configFileContent === null || configFileContent === void 0 ? void 0 : configFileContent.includes(item);
 });
 exports.checkIfConfigItemExists = checkIfConfigItemExists;
-// export const addToAllowedTypesConfig = async (types: [string]) => {
-//   const filePath = "epb.config.json";
-//   const jsonFileAsJSON = JSON.parse(await read(filePath, "utf8"));
-//   let configFileContent = jsonFileAsJSON.allowedTypes;
-//   if (!configFileContent) configFileContent = []
-//   types.forEach(type => {
-//     configFileContent.push(type)
-//     configFileContent.push(`${type}`)
-//     configFileContent.push(`[${type}]`)
-//     configFileContent.push(`${type}[]`)
-//   })
-// }
 const getAllAllowedTypes = () => __awaiter(void 0, void 0, void 0, function* () {
     const filePath = "epb.config.json";
     const jsonFileAsJSON = JSON.parse(yield read(filePath, "utf8"));
