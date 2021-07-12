@@ -9,7 +9,7 @@ const copy = promisify(ncp);
 const write = promisify(fs.writeFile);
 const writeToEnv = async (options) => {
   if (!options.env || typeof options.env !== "string") return;
-  await write(`${options.targetDirectory}/.env`, `DB_URI="${options.env}"`);
+  await write(`${options.targetDirectory}/.env`, `MONGO_URI="${options.env}"`);
 };
 const copyDatabaseFiles = async (options) => {
   try {

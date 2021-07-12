@@ -18,7 +18,7 @@ const typeDefs_1 = require("./typeDefs");
 const resolvers_1 = require("./resolvers");
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const connections_1 = require("./connections");
+// import { connectToDb } from "./connections";
 const logger_1 = __importDefault(require("./logger/logger"));
 const PORT = process.env.PORT || 8001;
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -48,6 +48,6 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     server.applyMiddleware({ app });
     app.listen({ port: PORT }, () => logger_1.default.info(`EPB-server @ http://localhost:${PORT}${server.graphqlPath}`));
     logger_1.default.http("Client @ http://localhost:5000");
-    yield connections_1.connectToDb();
+    // await connectToDb();
 });
 startServer();
