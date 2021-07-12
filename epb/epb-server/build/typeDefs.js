@@ -69,6 +69,7 @@ exports.typeDefs = gql `
     getAllowedTypes: [String]
     getAllDBSchemaNames: [String]
     getAllSchemaProps(schemaName: String): [String]
+    getAllowedCruds(schemaName: String): [String]
     # query-end
   }
   type Mutation {

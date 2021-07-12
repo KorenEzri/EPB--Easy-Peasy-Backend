@@ -83,6 +83,11 @@ exports.resolvers = {
             return yield utils.getAllSchemaProps(schemaName);
             // return [String]
         }),
+        // Action: get allowed CRUD operations for schema
+        getAllowedCruds: (_, { schemaName }) => __awaiter(void 0, void 0, void 0, function* () {
+            return yield utils.readFromSchemaConfigFile(schemaName);
+            // return [String]
+        }),
         // query-end
     },
     Mutation: {

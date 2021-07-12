@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllSchemaProps = exports.getAllAllowedTypes = exports.checkIfConfigItemExists = exports.alterConfigFile = exports.checkForDuplicateLines = exports.checkIfLinesAlreadyExist = exports.insertStringToFileInRangeOfLines = exports.insertImportStatement = exports.getAllSchemaNames = exports.restartServer = exports.addToAllowedTypes = exports.checkIfFileAlreadyExists = exports.checkIfOK = exports.applyPrettier = exports.addExportStatement = void 0;
+exports.getAllSchemaProps = exports.getAllAllowedTypes = exports.checkIfConfigItemExists = exports.alterConfigFile = exports.readFromConfigFile = exports.readFromSchemaConfigFile = exports.checkForDuplicateLines = exports.checkIfLinesAlreadyExist = exports.insertStringToFileInRangeOfLines = exports.insertImportStatement = exports.getAllSchemaNames = exports.restartServer = exports.addToAllowedTypes = exports.checkIfFileAlreadyExists = exports.checkIfOK = exports.applyPrettier = exports.addExportStatement = void 0;
 const consts_1 = require("../../consts");
 const logger_1 = __importDefault(require("../../logger/logger"));
 const fs_1 = __importDefault(require("fs"));
@@ -249,6 +249,22 @@ const checkForDuplicateLines = (filePath, fileAsString) => __awaiter(void 0, voi
         return { error: false };
 });
 exports.checkForDuplicateLines = checkForDuplicateLines;
+const readFromSchemaConfigFile = (schemaName) => __awaiter(void 0, void 0, void 0, function* () {
+    !schemaName.includes("Schema")
+        ? (schemaName = `${schemaName}Schema`)
+        : schemaName;
+    const filePath = `db/schemas/${schemaName.split(".ts").join("")}Config.json`;
+    const jsonFileAsJSON = JSON.parse(yield read(filePath, "utf8"));
+    return jsonFileAsJSON.availableCRUDActions;
+});
+exports.readFromSchemaConfigFile = readFromSchemaConfigFile;
+const readFromConfigFile = (contentHeader) => __awaiter(void 0, void 0, void 0, function* () {
+    const filePath = "epb.config.json";
+    const jsonFileAsJSON = JSON.parse(yield read(filePath, "utf8"));
+    const configFileContent = jsonFileAsJSON[contentHeader];
+    return configFileContent;
+});
+exports.readFromConfigFile = readFromConfigFile;
 const alterConfigFile = (action, contentHeader, content, type) => __awaiter(void 0, void 0, void 0, function* () {
     if (!type)
         type = "array";

@@ -104,7 +104,7 @@ exports.resolverTitles = {
     readAll: (parts) => `\n// Action: Read all ${parts.modelInterfaceName} Instances \n\n ${parts.resolverName}s: async () => {`,
     updateOne: (parts) => {
         var _a, _b, _c;
-        return `// Action: Update one ${parts.modelInterfaceName} Instance, based on an identifying property \n ${parts.resolverName}: async (_:any, { ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name} }: { ${(_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.name} :${utils.lowercaseFirstLetter(((_c = parts.identifier) === null || _c === void 0 ? void 0 : _c.type) || "")} }, { options }: { options: ${parts.modelInterfaceName} } ) => {`;
+        return `// Action: Update one ${parts.modelInterfaceName} Instance, based on an identifying property \n ${parts.resolverName}: async (_:any, { ${(_a = parts.identifier) === null || _a === void 0 ? void 0 : _a.name}, options }: { ${(_b = parts.identifier) === null || _b === void 0 ? void 0 : _b.name} :${utils.lowercaseFirstLetter(((_c = parts.identifier) === null || _c === void 0 ? void 0 : _c.type) || "")},  options: ${parts.modelInterfaceName} } ) => {`;
     },
     deleteOne: (parts) => {
         var _a, _b, _c;

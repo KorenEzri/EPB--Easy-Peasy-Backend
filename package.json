@@ -13,15 +13,15 @@
     "url": "git+https://github.com/KorenEzri/EPB--Easy-Peasy-Backend.git"
   },
   "bin": {
-    "@korenezri/easy-peasy-backend": "./epb-cli/bin/create-project",
-    "create-project": "./epb-cli/bin/create-project"
+    "@korenezri/easy-peasy-backend": "./epb-cli/bin/epb-create-server",
+    "epb-create-server": "./epb-cli/bin/epb-create-server"
   },
   "publishConfig": {
     "access": "public"
   },
   "keywords": [
     "cli",
-    "create-project"
+    "epb-create-server"
   ],
   "author": "Koren Ben Ezri",
   "license": "ISC",
