@@ -170,8 +170,11 @@ const addCrudToDBSchemas = (schemaName, crudOperations, identifier) => __awaiter
     const modelName = `${schemaNameOnly}Model`;
     const optionsName = `${utils.lowercaseFirstLetter(schemaNameOnly)}Options`;
     logger_1.default.http(`FROM: EPB-server: Inserting import statements...`);
+    if (!(yield utils.checkIfConfigItemExists('imported_options', optionsName))) {
+        yield insertOptionsInterfaceImportToResolverFile(optionsName);
+        yield utils.alterConfigFile('add', 'imported_options', optionsName);
+    }
     yield insertModelImportStatementToResolverFile(modelName);
-    yield insertOptionsInterfaceImportToResolverFile(optionsName);
     logger_1.default.http(`FROM: EPB-server: Creating ${crudOperations.length} CRUD operations..`);
     yield createCrudOps(schemaName, crudOperations, identifier);
     yield removeCrudOpsFromAvailabilityList(schemaName, crudOperations);
