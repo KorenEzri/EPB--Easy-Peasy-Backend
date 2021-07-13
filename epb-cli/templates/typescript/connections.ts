@@ -4,7 +4,7 @@ import Logger from "./logger/logger";
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || "";
+const MONGO_URI = process.env.DB_URI || "";
 export const connectToDb = () =>
   mongoose.connect(
     MONGO_URI,
