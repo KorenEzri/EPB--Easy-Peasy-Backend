@@ -49,7 +49,7 @@ const promptForMissingOptions = async (options) => {
       type: "list",
       name: "template",
       message: "Please choose which project template to use",
-      choices: ["Typescript"],
+      choices: ["Javascript", "Typescript"],
       default: defaultTemplate,
     });
   }
