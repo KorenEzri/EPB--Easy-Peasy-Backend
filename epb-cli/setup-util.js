@@ -32,7 +32,7 @@ const copyDatabaseFiles = async (options) => {
       }`}`
     )
     .slice(3)
-    .replace("setup-util.js\\", "");
+    .replace("main.js\\", "");
 
   options.databaseTemplateDir = databaseTemplateDir;
   return copy(databaseTemplateDir, `${options.targetDirectory}/db`, {
